@@ -336,6 +336,14 @@ class WordRepository(
         emit(getDueReviewCount())
     }
 
+    fun getTotalNewWordsFlow(): Flow<Int> = dailyStatsDao.getTotalNewWordsFlow()
+
+    fun getTotalReviewedWordsFlow(): Flow<Int> = dailyStatsDao.getTotalReviewedWordsFlow()
+
+    fun getTotalCorrectFlow(): Flow<Int> = dailyStatsDao.getTotalCorrectFlow()
+
+    fun getTotalWrongFlow(): Flow<Int> = dailyStatsDao.getTotalWrongFlow()
+
     fun getRecentStats(limit: Int): Flow<List<DailyStats>> = dailyStatsDao.getRecentStats(limit)
 
     suspend fun getTotalNewWords(): Int = runCatching { dailyStatsDao.getTotalNewWords() }.getOrDefault(0)

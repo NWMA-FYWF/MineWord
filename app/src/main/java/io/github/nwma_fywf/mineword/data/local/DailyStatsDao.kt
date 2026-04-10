@@ -14,18 +14,30 @@ interface DailyStatsDao {
     @Query("SELECT * FROM daily_stats WHERE date = :date")
     suspend fun getStatsForDate(date: Long): DailyStats?
 
+    @Query("SELECT COALESCE(SUM(newWordsCount), 0) FROM daily_stats")
+    fun getTotalNewWordsFlow(): Flow<Int>
+
+    @Query("SELECT COALESCE(SUM(reviewedWordsCount), 0) FROM daily_stats")
+    fun getTotalReviewedWordsFlow(): Flow<Int>
+
+    @Query("SELECT COALESCE(SUM(correctCount), 0) FROM daily_stats")
+    fun getTotalCorrectFlow(): Flow<Int>
+
+    @Query("SELECT COALESCE(SUM(wrongCount), 0) FROM daily_stats")
+    fun getTotalWrongFlow(): Flow<Int>
+
     @Query("SELECT * FROM daily_stats ORDER BY date DESC LIMIT :limit")
     fun getRecentStats(limit: Int): Flow<List<DailyStats>>
 
-    @Query("SELECT SUM(newWordsCount) FROM daily_stats")
+    @Query("SELECT COALESCE(SUM(newWordsCount), 0) FROM daily_stats")
     suspend fun getTotalNewWords(): Int
 
-    @Query("SELECT SUM(reviewedWordsCount) FROM daily_stats")
+    @Query("SELECT COALESCE(SUM(reviewedWordsCount), 0) FROM daily_stats")
     suspend fun getTotalReviewedWords(): Int
 
-    @Query("SELECT SUM(correctCount) FROM daily_stats")
+    @Query("SELECT COALESCE(SUM(correctCount), 0) FROM daily_stats")
     suspend fun getTotalCorrect(): Int
 
-    @Query("SELECT SUM(wrongCount) FROM daily_stats")
+    @Query("SELECT COALESCE(SUM(wrongCount), 0) FROM daily_stats")
     suspend fun getTotalWrong(): Int
 }

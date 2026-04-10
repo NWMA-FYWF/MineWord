@@ -7,7 +7,7 @@ import io.github.nwma_fywf.mineword.data.local.DailyStats
 import io.github.nwma_fywf.mineword.data.repository.WordRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -45,33 +45,40 @@ class StatsViewModel(private val repository: WordRepository) : ViewModel() {
         loadStats()
     }
 
-    fun loadStats() {
+    private fun loadStats() {
         viewModelScope.launch {
-            val totalNewWords = repository.getTotalNewWords()
-            val totalReviewedWords = repository.getTotalReviewedWords()
-            val totalCorrect = repository.getTotalCorrect()
-            val totalWrong = repository.getTotalWrong()
-            val total = totalCorrect + totalWrong
-            val accuracyRate = if (total > 0) (totalCorrect * 100 / total) else 0
-
-            _statsOverview.value = StatsOverview(
-                totalNewWords = totalNewWords,
-                totalReviewedWords = totalReviewedWords,
-                totalCorrect = totalCorrect,
-                totalWrong = totalWrong,
-                accuracyRate = accuracyRate
-            )
-
-            val recentStatsList = repository.getRecentStats(7).first()
-            _recentStats.value = recentStatsList.map { stats ->
-                StatsDay(
-                    date = stats.date,
-                    dateLabel = formatDate(stats.date),
-                    newWordsCount = stats.newWordsCount,
-                    reviewedWordsCount = stats.reviewedWordsCount,
-                    correctCount = stats.correctCount,
-                    wrongCount = stats.wrongCount
+            combine(
+                repository.getTotalNewWordsFlow(),
+                repository.getTotalReviewedWordsFlow(),
+                repository.getTotalCorrectFlow(),
+                repository.getTotalWrongFlow()
+            ) { newWords, reviewedWords, correct, wrong ->
+                val total = correct + wrong
+                val accuracyRate = if (total > 0) (correct * 100 / total) else 0
+                StatsOverview(
+                    totalNewWords = newWords,
+                    totalReviewedWords = reviewedWords,
+                    totalCorrect = correct,
+                    totalWrong = wrong,
+                    accuracyRate = accuracyRate
                 )
+            }.collect { overview ->
+                _statsOverview.value = overview
+            }
+        }
+
+        viewModelScope.launch {
+            repository.getRecentStats(7).collect { statsList ->
+                _recentStats.value = statsList.map { stats ->
+                    StatsDay(
+                        date = stats.date,
+                        dateLabel = formatDate(stats.date),
+                        newWordsCount = stats.newWordsCount,
+                        reviewedWordsCount = stats.reviewedWordsCount,
+                        correctCount = stats.correctCount,
+                        wrongCount = stats.wrongCount
+                    )
+                }
             }
         }
     }
