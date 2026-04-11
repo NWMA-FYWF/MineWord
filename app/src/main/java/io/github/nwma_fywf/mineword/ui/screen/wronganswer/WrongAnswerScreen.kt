@@ -220,6 +220,13 @@ private fun WrongAnswerCard(
                     text = word?.word ?: stringResource(R.string.word_deleted),
                     style = MaterialTheme.typography.titleMedium
                 )
+                if (item.wrongCount > 1) {
+                    Text(
+                        text = stringResource(R.string.wrong_count, item.wrongCount),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
                 IconButton(onClick = onDelete) {
                     Icon(
                         Icons.Default.Delete,

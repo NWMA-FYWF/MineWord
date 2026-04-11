@@ -12,7 +12,8 @@ import kotlinx.coroutines.launch
 
 data class WrongAnswerWithWord(
     val wrongAnswer: WrongAnswer,
-    val word: Word?
+    val word: Word?,
+    val wrongCount: Int = 1
 )
 
 enum class QuizModeFilter {
@@ -54,20 +55,24 @@ class WrongAnswerViewModel(private val repository: WordRepository) : ViewModel()
     }
 
     private fun updateCombinedList() {
-        val answers = _wrongAnswers.value
+        val allAnswers = _wrongAnswers.value
         val words = _words.value
         val filter = _modeFilter.value
         
+        // Count wrong answers per wordId
+        val wrongCountMap = allAnswers.groupingBy { it.wordId }.eachCount()
+        
         val filteredAnswers = if (filter == QuizModeFilter.ALL) {
-            answers
+            allAnswers
         } else {
-            answers.filter { it.quizMode == filter.name }
+            allAnswers.filter { it.quizMode == filter.name }
         }
         
         _wrongAnswersWithWords.value = filteredAnswers.map { answer ->
             WrongAnswerWithWord(
                 wrongAnswer = answer,
-                word = words[answer.wordId]
+                word = words[answer.wordId],
+                wrongCount = wrongCountMap[answer.wordId] ?: 1
             )
         }
     }
