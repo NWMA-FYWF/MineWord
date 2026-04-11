@@ -28,7 +28,9 @@ data class StatsDay(
     val newWordsCount: Int,
     val reviewedWordsCount: Int,
     val correctCount: Int,
-    val wrongCount: Int
+    val wrongCount: Int,
+    val accuracyRate: Int,
+    val accuracyChange: Int?
 )
 
 class StatsViewModel(private val repository: WordRepository) : ViewModel() {
@@ -69,16 +71,29 @@ class StatsViewModel(private val repository: WordRepository) : ViewModel() {
 
         viewModelScope.launch {
             repository.getRecentStats(7).collect { statsList ->
-                _recentStats.value = statsList.map { stats ->
+                val statsDays = statsList.mapIndexed { index, stats ->
+                    val total = stats.correctCount + stats.wrongCount
+                    val accuracyRate = if (total > 0) (stats.correctCount * 100 / total) else 0
+                    
+                    val previousAccuracy = if (index < statsList.size - 1) {
+                        val prevTotal = statsList[index + 1].correctCount + statsList[index + 1].wrongCount
+                        if (prevTotal > 0) (statsList[index + 1].correctCount * 100 / prevTotal) else 0
+                    } else null
+                    
+                    val accuracyChange = previousAccuracy?.let { accuracyRate - it }
+                    
                     StatsDay(
                         date = stats.date,
                         dateLabel = formatDate(stats.date),
                         newWordsCount = stats.newWordsCount,
                         reviewedWordsCount = stats.reviewedWordsCount,
                         correctCount = stats.correctCount,
-                        wrongCount = stats.wrongCount
+                        wrongCount = stats.wrongCount,
+                        accuracyRate = accuracyRate,
+                        accuracyChange = accuracyChange
                     )
                 }
+                _recentStats.value = statsDays
             }
         }
     }

@@ -264,11 +264,20 @@ private fun DailyStatsCard(statsDay: StatsDay) {
                     )
                 }
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        text = "${statsDay.correctCount}/${statsDay.correctCount + statsDay.wrongCount}",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = "${statsDay.correctCount}/${statsDay.correctCount + statsDay.wrongCount}",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        statsDay.accuracyChange?.let { change ->
+                            Text(
+                                text = if (change > 0) " ↑${change}%" else if (change < 0) " ↓${-change}%" else "",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = if (change > 0) MaterialTheme.colorScheme.primary else if (change < 0) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
                     Text(
                         text = stringResource(R.string.stats_correct_wrong),
                         style = MaterialTheme.typography.labelSmall,
