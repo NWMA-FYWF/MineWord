@@ -1,10 +1,18 @@
-<p align="center">
+# MineWord 
+
+<div align="center">
   <a href="https://github.com/nwma-fywf/MineWord">
     <img src="app/src/main/ic_launcher-playstore.png" alt="MineWord logo" width="128" height="128">
+    <h1> MineWord </h1>
+    <p>
+        <strong> 一款优雅的 Android 单词学习应用，帮助你高效记忆单词。 </strong>
+    </p>
   </a>
-</p>
-<p align="center">一款优雅的 Android 单词学习应用，帮助你高效记忆单词。</p>
-<p align="center">
+</div>
+
+--- 
+
+<div align="center">
   <a href="https://github.com/nwma-fywf/MineWord/releases"><img alt="Release" src="https://img.shields.io/github/v/release/nwma-fywf/MineWord?style=flat-square&color=3DDC84" /></a>
   <a href="https://developer.android.com/about/versions/pie"><img alt="API" src="https://img.shields.io/badge/API-24%2B-3DDC84?style=flat-square&logo=android&logoColor=white" /></a>
   <a href="https://github.com/nwma-fywf/MineWord/stargazers"><img alt="Stars" src="https://img.shields.io/github/stars/nwma-fywf/MineWord?style=flat-square&color=FFD700" /></a>
@@ -15,7 +23,7 @@
   <img src="https://img.shields.io/badge/Room-3DDC84?style=flat-square&logo=android&logoColor=white" alt="Room" />
   <img src="https://img.shields.io/badge/Coroutines-7F52FF?style=flat-square&logo=kotlin&logoColor=white" alt="Coroutines" />
   <img src="https://img.shields.io/badge/DataStore-4285F4?style=flat-square&logo=android&logoColor=white" alt="DataStore" />
-</p>
+</div>
 
 ---
 
