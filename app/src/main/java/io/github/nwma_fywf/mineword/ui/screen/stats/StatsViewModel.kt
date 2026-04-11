@@ -15,6 +15,7 @@ import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 data class StatsOverview(
+    val totalWordCount: Int,
     val totalNewWords: Int,
     val totalReviewedWords: Int,
     val totalCorrect: Int,
@@ -36,7 +37,7 @@ data class StatsDay(
 class StatsViewModel(private val repository: WordRepository) : ViewModel() {
 
     private val _statsOverview = MutableStateFlow<StatsOverview>(
-        StatsOverview(0, 0, 0, 0, 0)
+        StatsOverview(0, 0, 0, 0, 0, 0)
     )
     val statsOverview: StateFlow<StatsOverview> = _statsOverview
 
@@ -50,14 +51,16 @@ class StatsViewModel(private val repository: WordRepository) : ViewModel() {
     private fun loadStats() {
         viewModelScope.launch {
             combine(
+                repository.getWordCountFlow(),
                 repository.getTotalNewWordsFlow(),
                 repository.getTotalReviewedWordsFlow(),
                 repository.getTotalCorrectFlow(),
                 repository.getTotalWrongFlow()
-            ) { newWords, reviewedWords, correct, wrong ->
+            ) { wordCount, newWords, reviewedWords, correct, wrong ->
                 val total = correct + wrong
                 val accuracyRate = if (total > 0) (correct * 100 / total) else 0
                 StatsOverview(
+                    totalWordCount = wordCount,
                     totalNewWords = newWords,
                     totalReviewedWords = reviewedWords,
                     totalCorrect = correct,

@@ -79,6 +79,8 @@ class WordRepository(
 
     suspend fun getWordCount(): Int = wordDao.getWordCount()
 
+    fun getWordCountFlow(): Flow<Int> = wordDao.getWordCountFlow()
+
     fun getMeaningsByWordId(wordId: Long): Flow<List<Meaning>> =
         meaningDao.getMeaningsByWordId(wordId)
 

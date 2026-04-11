@@ -62,6 +62,9 @@ interface WordDao {
     @Query("SELECT COUNT(*) FROM words")
     suspend fun getWordCount(): Int
 
+    @Query("SELECT COUNT(*) FROM words")
+    fun getWordCountFlow(): Flow<Int>
+
     @Query("DELETE FROM words")
     suspend fun deleteAllWords()
 

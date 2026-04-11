@@ -14,7 +14,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material.icons.filled.Analytics
 import androidx.compose.material.icons.filled.DataUsage
 import androidx.compose.material.icons.filled.FontDownload
 import androidx.compose.material.icons.filled.Palette
@@ -33,7 +32,7 @@ fun SettingsScreen(
     viewModel: SettingsViewModel,
     onNavigateToThemeSetting: () -> Unit,
     onNavigateToFontSetting: () -> Unit,
-    onNavigateToStatsSetting: () -> Unit,
+    onNavigateToStats: () -> Unit,
     onNavigateToDataManagement: () -> Unit,
     onNavigateToLearningSetting: () -> Unit
 ) {
@@ -63,15 +62,6 @@ fun SettingsScreen(
             title = "字体设置",
             subtitle = "字体样式、自定义字体",
             onClick = onNavigateToFontSetting
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        SettingsEntryCard(
-            icon = Icons.Default.Analytics,
-            title = "词汇统计",
-            subtitle = "单词数量统计",
-            onClick = onNavigateToStatsSetting
         )
 
         Spacer(modifier = Modifier.height(16.dp))

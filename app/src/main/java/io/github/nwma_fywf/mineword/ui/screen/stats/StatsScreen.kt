@@ -109,11 +109,22 @@ private fun OverviewCard(statsOverview: StatsOverview) {
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            Text(
-                text = stringResource(R.string.stats_overview),
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onPrimaryContainer
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = stringResource(R.string.stats_overview),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+                Text(
+                    text = "${statsOverview.totalWordCount} ${stringResource(R.string.word_count_label)}",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            }
             Spacer(modifier = Modifier.height(16.dp))
 
             Row(

@@ -30,8 +30,6 @@ import io.github.nwma_fywf.mineword.ui.screen.settings.ThemeSettingScreen
 import io.github.nwma_fywf.mineword.ui.screen.settings.ThemeSettingViewModel
 import io.github.nwma_fywf.mineword.ui.screen.settings.FontSettingScreen
 import io.github.nwma_fywf.mineword.ui.screen.settings.FontSettingViewModel
-import io.github.nwma_fywf.mineword.ui.screen.settings.StatsSettingScreen
-import io.github.nwma_fywf.mineword.ui.screen.settings.StatsSettingViewModel
 import io.github.nwma_fywf.mineword.ui.screen.settings.DataManagementScreen
 import io.github.nwma_fywf.mineword.ui.screen.settings.DataManagementViewModel
 import io.github.nwma_fywf.mineword.ui.screen.settings.LearningSettingScreen
@@ -249,7 +247,7 @@ fun NavGraph(
                 viewModel = settingsVm,
                 onNavigateToThemeSetting = { navController.navigate(Screen.ThemeSetting.route) },
                 onNavigateToFontSetting = { navController.navigate(Screen.FontSetting.route) },
-                onNavigateToStatsSetting = { navController.navigate(Screen.StatsSetting.route) },
+                onNavigateToStats = { navController.navigate(Screen.Stats.route) },
                 onNavigateToDataManagement = { navController.navigate(Screen.DataManagement.route) },
                 onNavigateToLearningSetting = { navController.navigate(Screen.LearningSetting.route) }
             )
@@ -270,16 +268,6 @@ fun NavGraph(
             FontSettingScreen(
                 viewModel = viewModel,
                 onNavigateBack = { navController.popBackStack() }
-            )
-        }
-        composable(Screen.StatsSetting.route) {
-            val viewModel: StatsSettingViewModel = viewModel(
-                factory = StatsSettingViewModel.provideFactory(repository)
-            )
-            StatsSettingScreen(
-                viewModel = viewModel,
-                onNavigateBack = { navController.popBackStack() },
-                onNavigateToStats = { navController.navigate(Screen.Stats.route) }
             )
         }
         composable(Screen.DataManagement.route) {
