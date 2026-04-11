@@ -122,6 +122,7 @@
     <string name="next_word">下一个单词</string>
     <string name="answer_correct">回答正确！</string>
     <string name="answer_incorrect">回答错误！</string>
+    <string name="correct_answer_is">正确答案是：</string>
     <string name="quiz_finished">测验完成</string>
     <string name="accuracy_rate">正确率 %d%%</string>
     <string name="retry_quiz">再来一组</string>

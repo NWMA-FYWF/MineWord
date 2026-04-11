@@ -459,6 +459,20 @@ private fun ChoiceQuizContent(
             style = MaterialTheme.typography.titleMedium,
             color = if (state.isCorrectAnswered) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error,
         )
+        if (!state.isCorrectAnswered) {
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = stringResource(R.string.correct_answer_is),
+                style = MaterialTheme.typography.bodyLarge,
+            )
+            state.options.find { it.isCorrect }?.let { correctOption ->
+                Text(
+                    text = correctOption.text,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+            }
+        }
         Spacer(modifier = Modifier.height(24.dp))
         Button(
             onClick = onNext,
