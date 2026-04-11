@@ -337,6 +337,11 @@ class QuizViewModel(private val repository: WordRepository) : ViewModel() {
         selectRandomWord()
     }
 
+    fun skipQuestion() {
+        _userInput.value = ""
+        selectRandomWord()
+    }
+
     fun setModeAndStart(mode: QuizMode, countLimit: Int = -1, tagFilter: String? = null) {
         _quizMode.value = mode
         _quizCountLimit.value = countLimit

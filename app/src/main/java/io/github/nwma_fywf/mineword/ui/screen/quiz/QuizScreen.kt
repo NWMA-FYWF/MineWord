@@ -136,6 +136,7 @@ fun QuizScreen(
                                     totalCount = totalCount,
                                     onUserInputChanged = viewModel::onUserInputChanged,
                                     onSubmit = viewModel::submitAnswer,
+                                    onSkip = viewModel::skipQuestion,
                                     onFinish = { showExitConfirm = true },
                                 )
                             }
@@ -149,6 +150,7 @@ fun QuizScreen(
                                 totalCount = totalCount,
                                 onUserInputChanged = viewModel::onUserInputChanged,
                                 onSubmit = viewModel::submitAnswer,
+                                onSkip = viewModel::skipQuestion,
                                 onFinish = { showExitConfirm = true },
                             )
                             Spacer(modifier = Modifier.height(16.dp))
@@ -232,6 +234,7 @@ private fun WordQuizContent(
     totalCount: Int,
     onUserInputChanged: (String) -> Unit,
     onSubmit: () -> Unit,
+    onSkip: () -> Unit,
     onFinish: () -> Unit,
 ) {
     when (mode) {
@@ -297,6 +300,13 @@ private fun WordQuizContent(
         modifier = Modifier.fillMaxWidth(),
     ) {
         Text(stringResource(R.string.submit))
+    }
+    Spacer(modifier = Modifier.height(8.dp))
+    OutlinedButton(
+        onClick = onSkip,
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Text(stringResource(R.string.skip_question))
     }
     Spacer(modifier = Modifier.height(8.dp))
     OutlinedButton(
