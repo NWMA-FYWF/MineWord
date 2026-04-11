@@ -26,6 +26,16 @@ import io.github.nwma_fywf.mineword.ui.screen.review.ReviewScreen
 import io.github.nwma_fywf.mineword.ui.screen.review.ReviewViewModel
 import io.github.nwma_fywf.mineword.ui.screen.settings.SettingsScreen
 import io.github.nwma_fywf.mineword.ui.screen.settings.SettingsViewModel
+import io.github.nwma_fywf.mineword.ui.screen.settings.ThemeSettingScreen
+import io.github.nwma_fywf.mineword.ui.screen.settings.ThemeSettingViewModel
+import io.github.nwma_fywf.mineword.ui.screen.settings.FontSettingScreen
+import io.github.nwma_fywf.mineword.ui.screen.settings.FontSettingViewModel
+import io.github.nwma_fywf.mineword.ui.screen.settings.StatsSettingScreen
+import io.github.nwma_fywf.mineword.ui.screen.settings.StatsSettingViewModel
+import io.github.nwma_fywf.mineword.ui.screen.settings.DataManagementScreen
+import io.github.nwma_fywf.mineword.ui.screen.settings.DataManagementViewModel
+import io.github.nwma_fywf.mineword.ui.screen.settings.LearningSettingScreen
+import io.github.nwma_fywf.mineword.ui.screen.settings.LearningSettingViewModel
 import io.github.nwma_fywf.mineword.ui.screen.stats.StatsScreen
 import io.github.nwma_fywf.mineword.ui.screen.stats.StatsViewModel
 import io.github.nwma_fywf.mineword.ui.screen.worddetail.WordDetailScreen
@@ -235,7 +245,60 @@ fun NavGraph(
                     context
                 )
             )
-            SettingsScreen(viewModel = settingsVm)
+            SettingsScreen(
+                viewModel = settingsVm,
+                onNavigateToThemeSetting = { navController.navigate(Screen.ThemeSetting.route) },
+                onNavigateToFontSetting = { navController.navigate(Screen.FontSetting.route) },
+                onNavigateToStatsSetting = { navController.navigate(Screen.StatsSetting.route) },
+                onNavigateToDataManagement = { navController.navigate(Screen.DataManagement.route) },
+                onNavigateToLearningSetting = { navController.navigate(Screen.LearningSetting.route) }
+            )
+        }
+        composable(Screen.ThemeSetting.route) {
+            val viewModel: ThemeSettingViewModel = viewModel(
+                factory = ThemeSettingViewModel.provideFactory(themePreferences)
+            )
+            ThemeSettingScreen(
+                viewModel = viewModel,
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+        composable(Screen.FontSetting.route) {
+            val viewModel: FontSettingViewModel = viewModel(
+                factory = FontSettingViewModel.provideFactory(themePreferences, context)
+            )
+            FontSettingScreen(
+                viewModel = viewModel,
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+        composable(Screen.StatsSetting.route) {
+            val viewModel: StatsSettingViewModel = viewModel(
+                factory = StatsSettingViewModel.provideFactory(repository)
+            )
+            StatsSettingScreen(
+                viewModel = viewModel,
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToStats = { navController.navigate(Screen.Stats.route) }
+            )
+        }
+        composable(Screen.DataManagement.route) {
+            val viewModel: DataManagementViewModel = viewModel(
+                factory = DataManagementViewModel.provideFactory(themePreferences, repository, context)
+            )
+            DataManagementScreen(
+                viewModel = viewModel,
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+        composable(Screen.LearningSetting.route) {
+            val viewModel: LearningSettingViewModel = viewModel(
+                factory = LearningSettingViewModel.provideFactory(themePreferences, context)
+            )
+            LearningSettingScreen(
+                viewModel = viewModel,
+                onNavigateBack = { navController.popBackStack() }
+            )
         }
     }
 }

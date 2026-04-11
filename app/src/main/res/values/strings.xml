@@ -212,6 +212,9 @@
     <!-- Settings - Data Stats -->
     <string name="data_stats">词汇统计</string>
     <string name="word_count_label">单词</string>
+    <string name="word_statistics">词汇统计</string>
+    <string name="total_words">单词总数</string>
+    <string name="view_detailed_stats">查看详细统计</string>
 
     <!-- Settings - Data Management -->
     <string name="data_management">数据管理</string>

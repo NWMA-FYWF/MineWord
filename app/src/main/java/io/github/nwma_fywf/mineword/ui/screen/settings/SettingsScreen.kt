@@ -1,214 +1,138 @@
 package io.github.nwma_fywf.mineword.ui.screen.settings
 
-import android.widget.Toast
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Surface
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.Analytics
+import androidx.compose.material.icons.filled.DataUsage
+import androidx.compose.material.icons.filled.FontDownload
+import androidx.compose.material.icons.filled.Palette
+import androidx.compose.material.icons.filled.School
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
-import io.github.nwma_fywf.mineword.data.local.ThemePreferences
-import io.github.nwma_fywf.mineword.data.repository.WordRepository
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 @Composable
 fun SettingsScreen(
-    viewModel: SettingsViewModel
+    viewModel: SettingsViewModel,
+    onNavigateToThemeSetting: () -> Unit,
+    onNavigateToFontSetting: () -> Unit,
+    onNavigateToStatsSetting: () -> Unit,
+    onNavigateToDataManagement: () -> Unit,
+    onNavigateToLearningSetting: () -> Unit
 ) {
-    val themeMode by viewModel.themeMode.collectAsState()
-    val useDynamicColor by viewModel.useDynamicColor.collectAsState()
-    val fontStyle by viewModel.fontStyle.collectAsState()
-    val customFontPath by viewModel.customFontPath.collectAsState()
-    val customPrimaryColor by viewModel.customPrimaryColor.collectAsState()
-    val isExporting by viewModel.isExporting.collectAsState()
-    val isImporting by viewModel.isImporting.collectAsState()
-    val importDialogState by viewModel.importDialogState.collectAsState()
-    val importResultDialogState by viewModel.importResultDialogState.collectAsState()
-    val exportResult by viewModel.exportResult.collectAsState()
-    val reviewReminderEnabled by viewModel.reviewReminderEnabled.collectAsState()
-    val reviewReminderHour by viewModel.reviewReminderHour.collectAsState()
-    val reviewReminderMinute by viewModel.reviewReminderMinute.collectAsState()
-    val clearDataDialogState by viewModel.clearDataDialogState.collectAsState()
-    val dataStats by viewModel.dataStats.collectAsState()
-    var showColorPickerDialog by remember { mutableStateOf(false) }
-    var showTimePickerDialog by remember { mutableStateOf(false) }
-    val context = LocalContext.current
-
-    val exportLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.CreateDocument("application/json")
-    ) { uri ->
-        uri?.let { viewModel.exportData(it) }
-    }
-
-    val importLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.OpenMultipleDocuments()
-    ) { uris ->
-        if (uris.isNotEmpty()) {
-            viewModel.processImportFiles(uris)
-        }
-    }
-
-    val fontFileLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.OpenDocument()
-    ) { uri ->
-        uri?.let { viewModel.setCustomFontFromUri(it) }
-    }
-
-    LaunchedEffect(exportResult) {
-        if (exportResult.message.isNotEmpty()) {
-            Toast.makeText(context, exportResult.message, Toast.LENGTH_SHORT).show()
-            viewModel.dismissExportResult()
-        }
-    }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        ThemeSettingsSection(
-            themeMode = themeMode,
-            useDynamicColor = useDynamicColor,
-            customPrimaryColor = customPrimaryColor,
-            onThemeModeChange = viewModel::setThemeMode,
-            onUseDynamicColorChange = viewModel::setUseDynamicColor,
-            onThemeColorSelected = viewModel::setCustomThemeColor,
-            onClearThemeColor = viewModel::clearCustomThemeColor,
-            onCustomColorClick = { showColorPickerDialog = true }
+        Text(
+            text = "设置",
+            style = MaterialTheme.typography.headlineMedium,
+            modifier = Modifier.padding(bottom = 24.dp)
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
-
-        FontSettingsSection(
-            fontStyle = fontStyle,
-            customFontPath = customFontPath,
-            onFontStyleChange = viewModel::setFontStyle,
-            onSelectFontFile = { fontFileLauncher.launch(arrayOf("font/ttf", "font/otf", "application/x-font-ttf", "application/x-font-otf")) },
-            onClearFont = viewModel::clearCustomFont
+        SettingsEntryCard(
+            icon = Icons.Default.Palette,
+            title = "主题设置",
+            subtitle = "主题模式、动态颜色、主题色",
+            onClick = onNavigateToThemeSetting
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
-        DataStatsSection(
-            wordCount = dataStats.wordCount
+        SettingsEntryCard(
+            icon = Icons.Default.FontDownload,
+            title = "字体设置",
+            subtitle = "字体样式、自定义字体",
+            onClick = onNavigateToFontSetting
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
-        DataManagementSection(
-            isExporting = isExporting,
-            isImporting = isImporting,
-            onExport = {
-                val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-                exportLauncher.launch("mineword_backup_$timestamp.json")
-            },
-            onImport = { importLauncher.launch(arrayOf("application/json")) },
-            onClearData = viewModel::showClearDataDialog
+        SettingsEntryCard(
+            icon = Icons.Default.Analytics,
+            title = "词汇统计",
+            subtitle = "单词数量统计",
+            onClick = onNavigateToStatsSetting
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
-        LearningSettingsSection(
-            reviewReminderEnabled = reviewReminderEnabled,
-            reviewReminderHour = reviewReminderHour,
-            reviewReminderMinute = reviewReminderMinute,
-            onReviewReminderChange = viewModel::setReviewReminderEnabled,
-            onTimeClick = { showTimePickerDialog = true }
+        SettingsEntryCard(
+            icon = Icons.Default.DataUsage,
+            title = "数据管理",
+            subtitle = "导出、导入、清空数据",
+            onClick = onNavigateToDataManagement
         )
-    }
 
-    if (importDialogState.isVisible) {
-        DuplicateStrategyDialog(
-            duplicateCount = importDialogState.duplicateWords.size,
-            duplicateWords = importDialogState.duplicateWords,
-            onStrategySelected = viewModel::onDuplicateStrategySelected,
-            onDismiss = viewModel::dismissImportDialog
+        Spacer(modifier = Modifier.height(16.dp))
+
+        SettingsEntryCard(
+            icon = Icons.Default.School,
+            title = "学习设置",
+            subtitle = "复习提醒、提醒时间",
+            onClick = onNavigateToLearningSetting
         )
     }
+}
 
-    if (importResultDialogState.isVisible) {
-        ImportResultDialog(
-            result = importResultDialogState.result,
-            onDismiss = viewModel::dismissImportResultDialog
+@Composable
+private fun SettingsEntryCard(
+    icon: ImageVector,
+    title: String,
+    subtitle: String,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(vertical = 16.dp, horizontal = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            modifier = Modifier.size(32.dp),
+            tint = MaterialTheme.colorScheme.primary
         )
-    }
-
-    if (showColorPickerDialog) {
-        CustomColorPickerDialog(
-            onColorSelected = { primary, secondary, tertiary ->
-                viewModel.setCustomThemeColor(primary, secondary, tertiary)
-                showColorPickerDialog = false
-            },
-            onDismiss = { showColorPickerDialog = false }
-        )
-    }
-
-    if (clearDataDialogState.isVisible) {
-        ClearDataConfirmDialog(
-            wordCount = clearDataDialogState.wordCount,
-            onConfirm = viewModel::confirmClearData,
-            onDismiss = viewModel::dismissClearDataDialog
-        )
-    }
-
-    if (showTimePickerDialog) {
-        SettingsTimePickerDialog(
-            initialHour = reviewReminderHour,
-            initialMinute = reviewReminderMinute,
-            onTimeSelected = { hour, minute ->
-                viewModel.setReviewReminderTime(hour, minute)
-                showTimePickerDialog = false
-            },
-            onDismiss = { showTimePickerDialog = false }
-        )
-    }
-
-    if (isExporting || isImporting) {
-        Dialog(
-            onDismissRequest = { },
-            properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
-        ) {
-            Surface(
-                modifier = Modifier.size(120.dp),
-                shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
-                color = Color(0xFF2D2D2D)
-            ) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(48.dp),
-                        color = Color.White,
-                        strokeWidth = 3.dp
-                    )
-                }
-            }
+        
+        Spacer(modifier = Modifier.width(16.dp))
+        
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleMedium
+            )
+            Text(
+                text = subtitle,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
+        
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant
+        )
     }
 }
