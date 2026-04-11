@@ -308,14 +308,7 @@ private fun WordQuizContent(
     ) {
         Text(stringResource(R.string.skip_question))
     }
-    Spacer(modifier = Modifier.height(8.dp))
-    OutlinedButton(
-        onClick = onFinish,
-        modifier = Modifier.fillMaxWidth(),
-    ) {
-        Text(stringResource(R.string.finish_quiz))
     }
-}
 
 @Composable
 private fun UserJudgmentContent(
@@ -456,16 +449,6 @@ private fun ChoiceQuizContent(
                 text = option.text,
                 style = MaterialTheme.typography.bodyLarge,
             )
-        }
-    }
-
-    if (state.isCorrectAnswered == null) {
-        Spacer(modifier = Modifier.height(16.dp))
-        OutlinedButton(
-            onClick = onFinish,
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            Text(stringResource(R.string.finish_quiz))
         }
     }
 
