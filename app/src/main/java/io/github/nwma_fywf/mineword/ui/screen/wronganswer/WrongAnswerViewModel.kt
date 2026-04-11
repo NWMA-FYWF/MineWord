@@ -8,8 +8,6 @@ import io.github.nwma_fywf.mineword.data.local.WrongAnswer
 import io.github.nwma_fywf.mineword.data.repository.WordRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 
 data class WrongAnswerWithWord(
@@ -17,10 +15,16 @@ data class WrongAnswerWithWord(
     val word: Word?
 )
 
+enum class QuizModeFilter {
+    ALL, EN_TO_CN, CN_TO_EN, CHOICE_EN_TO_CN, CHOICE_CN_TO_EN
+}
+
 class WrongAnswerViewModel(private val repository: WordRepository) : ViewModel() {
 
     private val _wrongAnswers = MutableStateFlow<List<WrongAnswer>>(emptyList())
     private val _words = MutableStateFlow<Map<Long, Word>>(emptyMap())
+    private val _modeFilter = MutableStateFlow(QuizModeFilter.ALL)
+    val modeFilter: StateFlow<QuizModeFilter> = _modeFilter
 
     private val _wrongAnswersWithWords = MutableStateFlow<List<WrongAnswerWithWord>>(emptyList())
     val wrongAnswersWithWords: StateFlow<List<WrongAnswerWithWord>> = _wrongAnswersWithWords
@@ -52,12 +56,25 @@ class WrongAnswerViewModel(private val repository: WordRepository) : ViewModel()
     private fun updateCombinedList() {
         val answers = _wrongAnswers.value
         val words = _words.value
-        _wrongAnswersWithWords.value = answers.map { answer ->
+        val filter = _modeFilter.value
+        
+        val filteredAnswers = if (filter == QuizModeFilter.ALL) {
+            answers
+        } else {
+            answers.filter { it.quizMode == filter.name }
+        }
+        
+        _wrongAnswersWithWords.value = filteredAnswers.map { answer ->
             WrongAnswerWithWord(
                 wrongAnswer = answer,
                 word = words[answer.wordId]
             )
         }
+    }
+
+    fun setModeFilter(filter: QuizModeFilter) {
+        _modeFilter.value = filter
+        updateCombinedList()
     }
 
     fun deleteWrongAnswer(id: Long) {

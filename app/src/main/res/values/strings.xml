@@ -143,6 +143,9 @@
     <!-- Wrong Answer -->
     <string name="clear_wrong_answers">清空</string>
     <string name="no_wrong_answers">暂无错题</string>
+    <string name="no_wrong_answers_for_mode">该模式下暂无错题</string>
+    <string name="filter">筛选</string>
+    <string name="filter_all">全部模式</string>
     <string name="clear_wrong_answer_title">清空错题</string>
     <string name="clear_wrong_answer_confirm">确定要清空所有错题记录吗？</string>
     <string name="word_deleted">单词已删除</string>
