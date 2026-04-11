@@ -14,6 +14,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -51,7 +52,10 @@ fun QuizScreen(
     val quizState by viewModel.quizState.collectAsState()
     val quizMode by viewModel.quizMode.collectAsState()
     val totalCount by viewModel.totalCount.collectAsState()
+    val quizCountLimit by viewModel.quizCountLimit.collectAsState()
     var showExitConfirm by remember { mutableStateOf(false) }
+
+    val showProgress = quizCountLimit > 0 && quizState !is QuizViewModel.QuizState.Idle && quizState !is QuizViewModel.QuizState.Finished
 
     BackHandler(enabled = quizState !is QuizViewModel.QuizState.Finished && quizState !is QuizViewModel.QuizState.Idle) {
         showExitConfirm = true
@@ -83,95 +87,119 @@ fun QuizScreen(
             )
         }
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-        ) {
-            when (val state = quizState) {
-                is QuizViewModel.QuizState.Idle -> {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+            ) {
+                if (showProgress) {
+                    val progress = totalCount.toFloat() / quizCountLimit.toFloat()
+                    LinearProgressIndicator(
+                        progress = { progress.coerceIn(0f, 1f) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 8.dp),
+                    )
                     Text(
-                        text = stringResource(R.string.no_words_for_quiz),
-                        style = MaterialTheme.typography.bodyLarge,
+                        text = stringResource(R.string.quiz_progress, totalCount, quizCountLimit),
+                        style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                        textAlign = TextAlign.Center
                     )
                 }
-                is QuizViewModel.QuizState.WaitingInput -> {
-                    currentWord?.let { word ->
-                        WordQuizContent(
-                            word = word,
-                            meanings = currentMeanings,
-                            mode = quizMode,
-                            userInput = userInput,
-                            totalCount = totalCount,
-                            onUserInputChanged = viewModel::onUserInputChanged,
-                            onSubmit = viewModel::submitAnswer,
-                            onFinish = { showExitConfirm = true },
-                        )
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                ) {
+                    when (val state = quizState) {
+                        is QuizViewModel.QuizState.Idle -> {
+                            Text(
+                                text = stringResource(R.string.no_words_for_quiz),
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                        is QuizViewModel.QuizState.WaitingInput -> {
+                            currentWord?.let { word ->
+                                WordQuizContent(
+                                    word = word,
+                                    meanings = currentMeanings,
+                                    mode = quizMode,
+                                    userInput = userInput,
+                                    totalCount = totalCount,
+                                    onUserInputChanged = viewModel::onUserInputChanged,
+                                    onSubmit = viewModel::submitAnswer,
+                                    onFinish = { showExitConfirm = true },
+                                )
+                            }
+                        }
+                        is QuizViewModel.QuizState.WaitingInputDegraded -> {
+                            WordQuizContent(
+                                word = state.word,
+                                meanings = currentMeanings,
+                                mode = state.mode,
+                                userInput = userInput,
+                                totalCount = totalCount,
+                                onUserInputChanged = viewModel::onUserInputChanged,
+                                onSubmit = viewModel::submitAnswer,
+                                onFinish = { showExitConfirm = true },
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Text(
+                                text = stringResource(state.messageResId),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.error,
+                            )
+                        }
+                        is QuizViewModel.QuizState.UserJudgment -> {
+                            UserJudgmentContent(
+                                word = state.word,
+                                userInput = state.userInput,
+                                existingMeanings = state.existingMeanings,
+                                onCorrect = viewModel::userJudgmentCorrect,
+                                onIncorrect = viewModel::userJudgmentIncorrect,
+                            )
+                        }
+                        is QuizViewModel.QuizState.WaitingChoice -> {
+                            ChoiceQuizContent(
+                                state = state,
+                                mode = quizMode,
+                                meanings = currentMeanings,
+                                totalCount = totalCount,
+                                onSelectOption = viewModel::selectChoiceOption,
+                                onNext = viewModel::nextChoiceWord,
+                                onFinish = { showExitConfirm = true },
+                            )
+                        }
+                        is QuizViewModel.QuizState.Incorrect -> {
+                            currentWord?.let { word ->
+                                IncorrectContent(
+                                    word = word,
+                                    mode = quizMode,
+                                    userInput = state.userInput,
+                                    onNext = viewModel::nextWord,
+                                )
+                            }
+                        }
+                        is QuizViewModel.QuizState.Finished -> {
+                            QuizFinishedContent(
+                                correctCount = state.correctCount,
+                                wrongCount = state.wrongCount,
+                                onRestart = viewModel::resetQuiz,
+                                onExit = onNavigateBack,
+                            )
+                        }
                     }
-                }
-                is QuizViewModel.QuizState.WaitingInputDegraded -> {
-                    WordQuizContent(
-                        word = state.word,
-                        meanings = currentMeanings,
-                        mode = state.mode,
-                        userInput = userInput,
-                        totalCount = totalCount,
-                        onUserInputChanged = viewModel::onUserInputChanged,
-                        onSubmit = viewModel::submitAnswer,
-                        onFinish = { showExitConfirm = true },
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Text(
-                        text = stringResource(state.messageResId),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.error,
-                    )
-                }
-                is QuizViewModel.QuizState.UserJudgment -> {
-                    UserJudgmentContent(
-                        word = state.word,
-                        userInput = state.userInput,
-                        existingMeanings = state.existingMeanings,
-                        onCorrect = viewModel::userJudgmentCorrect,
-                        onIncorrect = viewModel::userJudgmentIncorrect,
-                    )
-                }
-                is QuizViewModel.QuizState.WaitingChoice -> {
-                    ChoiceQuizContent(
-                        state = state,
-                        mode = quizMode,
-                        meanings = currentMeanings,
-                        totalCount = totalCount,
-                        onSelectOption = viewModel::selectChoiceOption,
-                        onNext = viewModel::nextChoiceWord,
-                        onFinish = { showExitConfirm = true },
-                    )
-                }
-                is QuizViewModel.QuizState.Incorrect -> {
-                    currentWord?.let { word ->
-                        IncorrectContent(
-                            word = word,
-                            mode = quizMode,
-                            userInput = state.userInput,
-                            onNext = viewModel::nextWord,
-                        )
-                    }
-                }
-                is QuizViewModel.QuizState.Finished -> {
-                    QuizFinishedContent(
-                        correctCount = state.correctCount,
-                        wrongCount = state.wrongCount,
-                        onRestart = viewModel::resetQuiz,
-                        onExit = onNavigateBack,
-                    )
                 }
             }
         }
-    }
 
     if (showExitConfirm) {
         AlertDialog(
