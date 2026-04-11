@@ -39,7 +39,8 @@ fun MineWordApp(
     customFontPath: String?,
     customPrimaryColor: Int?,
     customSecondaryColor: Int?,
-    customTertiaryColor: Int?
+    customTertiaryColor: Int?,
+    fontScale: Float
 ) {
     MineWordTheme(
         themeMode = themeMode,
@@ -48,7 +49,8 @@ fun MineWordApp(
         customFontPath = customFontPath,
         customPrimaryColor = customPrimaryColor,
         customSecondaryColor = customSecondaryColor,
-        customTertiaryColor = customTertiaryColor
+        customTertiaryColor = customTertiaryColor,
+        fontScale = fontScale
     ) {
         val navController = rememberNavController()
         val navBackStackEntry by navController.currentBackStackEntryAsState()

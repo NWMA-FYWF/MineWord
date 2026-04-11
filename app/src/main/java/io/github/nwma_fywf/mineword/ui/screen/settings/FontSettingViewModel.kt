@@ -31,9 +31,22 @@ class FontSettingViewModel(
             initialValue = null
         )
 
+    val fontScale: StateFlow<Float> = themePreferences.fontScale
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = 1.0f
+        )
+
     fun setFontStyle(style: FontStyle) {
         viewModelScope.launch {
             themePreferences.setFontStyle(style)
+        }
+    }
+
+    fun setFontScale(scale: Float) {
+        viewModelScope.launch {
+            themePreferences.setFontScale(scale)
         }
     }
 

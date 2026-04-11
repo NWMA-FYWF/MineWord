@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -34,6 +35,7 @@ class ThemePreferences(private val context: Context) {
         private val USE_DYNAMIC_COLOR_KEY = booleanPreferencesKey("use_dynamic_color")
         private val FONT_STYLE_KEY = stringPreferencesKey("font_style")
         private val CUSTOM_FONT_PATH_KEY = stringPreferencesKey("custom_font_path")
+        private val FONT_SCALE_KEY = floatPreferencesKey("font_scale")
         private val CUSTOM_PRIMARY_KEY = intPreferencesKey("custom_primary")
         private val CUSTOM_SECONDARY_KEY = intPreferencesKey("custom_secondary")
         private val CUSTOM_TERTIARY_KEY = intPreferencesKey("custom_tertiary")
@@ -84,6 +86,16 @@ class ThemePreferences(private val context: Context) {
 
     val customFontPath: Flow<String?> = context.dataStore.data.map { preferences ->
         preferences[CUSTOM_FONT_PATH_KEY]
+    }
+
+    val fontScale: Flow<Float> = context.dataStore.data.map { preferences ->
+        preferences[FONT_SCALE_KEY] ?: 1.0f
+    }
+
+    suspend fun setFontScale(scale: Float) {
+        context.dataStore.edit { preferences ->
+            preferences[FONT_SCALE_KEY] = scale.coerceIn(0.5f, 2.0f)
+        }
     }
 
     suspend fun setCustomFontPath(path: String?) {
