@@ -10,8 +10,8 @@ sealed class Screen(val route: String) {
         fun createRoute(wordId: Long) = "edit_word/$wordId"
     }
     data object QuizMode : Screen("quiz_mode")
-    data object QuizPlay : Screen("quiz_play/{mode}/{count}") {
-        fun createRoute(mode: String, count: Int) = "quiz_play/$mode/$count"
+    data object QuizPlay : Screen("quiz_play/{mode}/{count}/{tag}") {
+        fun createRoute(mode: String, count: Int, tag: String?) = "quiz_play/$mode/$count/${tag ?: "all"}"
     }
     data object Review : Screen("review")
     data object WrongAnswer : Screen("wrong_answer")

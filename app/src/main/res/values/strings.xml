@@ -136,6 +136,9 @@
     <string name="all_questions">全部题目</string>
     <string name="start_quiz">开始测验</string>
     <string name="quiz_progress">第 %1$d 题 / 共 %2$d 题</string>
+    <string name="select_quiz_range">选择单词范围</string>
+    <string name="all_words">全部单词</string>
+    <string name="next">下一步</string>
 
     <!-- Wrong Answer -->
     <string name="clear_wrong_answers">清空</string>

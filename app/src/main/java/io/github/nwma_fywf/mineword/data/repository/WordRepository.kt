@@ -69,6 +69,10 @@ class WordRepository(
 
     fun getAllTagsRaw(): Flow<List<String>> = wordDao.getAllTagsRaw()
 
+    fun getWordsByTag(tag: String): Flow<List<Word>> = wordDao.getWordsByTag(tag)
+
+    suspend fun getWordsByTagOnce(tag: String): List<Word> = wordDao.getWordsByTagOnce(tag)
+
     suspend fun getWordByWord(word: String): Word? = wordDao.getWordByWord(word)
 
     suspend fun getAllWordsList(): List<Word> = wordDao.getAllWordsOnce()

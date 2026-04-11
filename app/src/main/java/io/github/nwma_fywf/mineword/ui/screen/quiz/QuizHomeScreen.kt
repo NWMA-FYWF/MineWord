@@ -40,13 +40,16 @@ import io.github.nwma_fywf.mineword.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QuizHomeScreen(
-    onSelectMode: (QuizViewModel.QuizMode, Int) -> Unit,
+    onSelectMode: (QuizViewModel.QuizMode, Int, String?) -> Unit,
     onNavigateToWrongAnswer: () -> Unit,
     viewModel: QuizHomeViewModel? = null,
 ) {
     val dueReviewCount by viewModel?.dueReviewCount?.collectAsState(initial = 0) ?: remember { mutableStateOf(0) }
+    val availableTags by viewModel?.availableTags?.collectAsState(initial = emptyList()) ?: remember { mutableStateOf(emptyList()) }
+    var showRangeDialog by remember { mutableStateOf(false) }
     var showCountDialog by remember { mutableStateOf(false) }
     var pendingMode by remember { mutableStateOf<QuizViewModel.QuizMode?>(null) }
+    var pendingTag by remember { mutableStateOf<String?>(null) }
 
     Scaffold(
         topBar = {
@@ -73,7 +76,7 @@ fun QuizHomeScreen(
                             mode = mode,
                             onClick = {
                                 pendingMode = mode
-                                showCountDialog = true
+                                showRangeDialog = true
                             },
                             modifier = Modifier.weight(1f)
                         )
@@ -118,18 +121,37 @@ fun QuizHomeScreen(
         }
     }
 
+    if (showRangeDialog && pendingMode != null) {
+        QuizRangeDialog(
+            availableTags = availableTags,
+            onDismiss = {
+                showRangeDialog = false
+                pendingMode = null
+            },
+            onConfirm = { tag ->
+                pendingMode?.let { mode ->
+                    pendingTag = tag
+                    showRangeDialog = false
+                    showCountDialog = true
+                }
+            }
+        )
+    }
+
     if (showCountDialog && pendingMode != null) {
         QuizCountDialog(
             onDismiss = {
                 showCountDialog = false
                 pendingMode = null
+                pendingTag = null
             },
             onConfirm = { count ->
                 pendingMode?.let { mode ->
-                    onSelectMode(mode, count)
+                    onSelectMode(mode, count, pendingTag)
                 }
                 showCountDialog = false
                 pendingMode = null
+                pendingTag = null
             }
         )
     }
@@ -251,6 +273,81 @@ private fun QuizCountDialog(
         confirmButton = {
             TextButton(onClick = { onConfirm(selectedCount) }) {
                 Text(stringResource(R.string.start_quiz))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.cancel))
+            }
+        }
+    )
+}
+
+@Composable
+private fun QuizRangeDialog(
+    availableTags: List<String>,
+    onDismiss: () -> Unit,
+    onConfirm: (String?) -> Unit,
+) {
+    var selectedTag by remember { mutableStateOf<String?>(null) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.select_quiz_range)) },
+        text = {
+            Column(Modifier.selectableGroup()) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp)
+                        .selectable(
+                            selected = selectedTag == null,
+                            onClick = { selectedTag = null },
+                            role = Role.RadioButton
+                        )
+                        .padding(horizontal = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    RadioButton(
+                        selected = selectedTag == null,
+                        onClick = null
+                    )
+                    Text(
+                        text = stringResource(R.string.all_words),
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.padding(start = 16.dp)
+                    )
+                }
+
+                availableTags.forEach { tag ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp)
+                            .selectable(
+                                selected = selectedTag == tag,
+                                onClick = { selectedTag = tag },
+                                role = Role.RadioButton
+                            )
+                            .padding(horizontal = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        RadioButton(
+                            selected = selectedTag == tag,
+                            onClick = null
+                        )
+                        Text(
+                            text = tag,
+                            style = MaterialTheme.typography.bodyLarge,
+                            modifier = Modifier.padding(start = 16.dp)
+                        )
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = { onConfirm(selectedTag) }) {
+                Text(stringResource(R.string.next))
             }
         },
         dismissButton = {

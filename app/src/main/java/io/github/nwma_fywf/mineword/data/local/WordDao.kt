@@ -64,4 +64,10 @@ interface WordDao {
 
     @Query("DELETE FROM words")
     suspend fun deleteAllWords()
+
+    @Query("SELECT * FROM words WHERE tags LIKE '%' || :tag || '%' ORDER BY createdAt DESC")
+    fun getWordsByTag(tag: String): Flow<List<Word>>
+
+    @Query("SELECT * FROM words WHERE tags LIKE '%' || :tag || '%' ORDER BY createdAt DESC")
+    suspend fun getWordsByTagOnce(tag: String): List<Word>
 }

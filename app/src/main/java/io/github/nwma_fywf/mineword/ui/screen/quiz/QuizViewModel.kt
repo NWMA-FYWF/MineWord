@@ -67,6 +67,9 @@ class QuizViewModel(private val repository: WordRepository) : ViewModel() {
     private val _quizCountLimit = MutableStateFlow(-1)
     val quizCountLimit: StateFlow<Int> = _quizCountLimit
 
+    private val _quizTagFilter = MutableStateFlow<String?>(null)
+    val quizTagFilter: StateFlow<String?> = _quizTagFilter
+
     sealed class QuizState {
         data object Idle : QuizState()
         data object WaitingInput : QuizState()
@@ -334,9 +337,10 @@ class QuizViewModel(private val repository: WordRepository) : ViewModel() {
         selectRandomWord()
     }
 
-    fun setModeAndStart(mode: QuizMode, countLimit: Int = -1) {
+    fun setModeAndStart(mode: QuizMode, countLimit: Int = -1, tagFilter: String? = null) {
         _quizMode.value = mode
         _quizCountLimit.value = countLimit
+        _quizTagFilter.value = tagFilter
         _correctCount.value = 0
         _wrongCount.value = 0
         _totalCount.value = 0
@@ -345,7 +349,31 @@ class QuizViewModel(private val repository: WordRepository) : ViewModel() {
             _quizState.value = QuizState.Idle
             loadReviewWords()
         } else {
-            selectRandomWord()
+            loadWordsForQuiz(tagFilter)
+        }
+    }
+
+    private fun loadWordsForQuiz(tag: String?) {
+        viewModelScope.launch {
+            val words = if (tag != null) {
+                repository.getWordsByTagOnce(tag)
+            } else {
+                repository.getAllWordsList()
+            }
+            _allWords.value = words
+            val meaningsMap = mutableMapOf<Long, List<Meaning>>()
+            words.forEach { word ->
+                repository.getMeaningsByWordId(word.id).first().let { meanings ->
+                    meaningsMap[word.id] = meanings
+                }
+            }
+            _allMeaningsMap.value = meaningsMap
+            if (words.isNotEmpty()) {
+                selectRandomWord()
+            } else {
+                _currentWord.value = null
+                _quizState.value = QuizState.Idle
+            }
         }
     }
 
