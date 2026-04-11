@@ -10,8 +10,6 @@
   </a>
 </div>
 
---- 
-
 <div align="center">
   <a href="https://github.com/nwma-fywf/MineWord/releases"><img alt="Release" src="https://img.shields.io/github/v/release/nwma-fywf/MineWord?style=flat-square&color=3DDC84" /></a>
   <a href="https://developer.android.com/about/versions/pie"><img alt="API" src="https://img.shields.io/badge/API-24%2B-3DDC84?style=flat-square&logo=android&logoColor=white" /></a>
@@ -31,12 +29,12 @@
 
 | 模块 | 功能 |
 |------|------|
-| **词汇管理** | 添加、编辑、删除单词，释义和例句，搜索和排序 |
-| **复习** | 艾宾浩斯遗忘曲线复习计划，复习提醒通知 |
-| **测验** | 英译汉、汉译英、选择题模式、错题重练 |
-| **统计** | 学习数据统计，正确率追踪 |
-| **主题** | 亮色/暗色模式，自定义主题颜色 |
-| **数据** | JSON 导出/导入，批量导入 |
+| **词汇管理** | 添加、编辑、删除单词，支持释义、例句、词形、短语、同反义词、标签、来源和个人笔记；搜索和排序功能 |
+| **复习** | 基于艾宾浩斯遗忘曲线的智能复习计划；自定义复习间隔；复习提醒通知（后台工作器） |
+| **测验** | 四种测验模式：英译汉、汉译英、选择题（英译汉/汉译英）；错题重练功能；题目数量限制；标签过滤 |
+| **统计** | 学习数据全面统计：单词总数、新词数、复习词数、正确/错误数量、正确率趋势；最近7天学习数据详细分析 |
+| **主题** | 亮色/暗色模式自动切换；自定义主题颜色；支持系统主题跟随 |
+| **数据** | JSON格式导入/导出；批量导入单词列表 |
 
 ---
 
