@@ -30,7 +30,6 @@ import io.github.nwma_fywf.mineword.ui.util.MeaningParser
 fun WordCard(
     word: Word,
     meanings: List<Meaning>,
-    exampleSentences: List<ExampleSentence> = emptyList(),
     onClick: () -> Unit,
     onLongClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
@@ -68,12 +67,10 @@ fun WordCard(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
+
             Spacer(modifier = Modifier.height(4.dp))
             MeaningsContent(meanings = meanings)
-            if (exampleSentences.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(8.dp))
-                ExampleSentencesContent(sentences = exampleSentences)
-            }
+
             val tags = word.tags.split(",").map { it.trim() }.filter { it.isNotEmpty() }
             if (tags.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(8.dp))
@@ -82,63 +79,6 @@ fun WordCard(
                         SuggestionChip(
                             onClick = {},
                             label = { Text(tag, style = MaterialTheme.typography.labelSmall) },
-                        )
-                    }
-                }
-            }
-
-            val synonyms = word.synonyms.split(",").map { it.trim() }.filter { it.isNotEmpty() }
-            val antonyms = word.antonyms.split(",").map { it.trim() }.filter { it.isNotEmpty() }
-            if (synonyms.isNotEmpty() || antonyms.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(8.dp))
-                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    if (synonyms.isNotEmpty()) {
-                        Text(
-                            text = stringResource(R.string.synonyms_prefix, synonyms.joinToString(", ")),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
-                    if (antonyms.isNotEmpty()) {
-                        Text(
-                            text = stringResource(R.string.antonyms_prefix, antonyms.joinToString(", ")),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
-                }
-            }
-
-            val phrases = word.phrases.split(",").map { it.trim() }.filter { it.isNotEmpty() }
-            if (phrases.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = stringResource(R.string.phrases_prefix, phrases.joinToString(", ")),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.primary,
-                )
-            }
-
-            val wordForms = word.wordForms.split(",").map { it.trim() }.filter { it.isNotEmpty() }
-            if (wordForms.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = stringResource(R.string.word_forms_prefix, wordForms.joinToString(", ")),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.tertiary,
-                )
-            }
-
-            if (word.personalNotes.isNotBlank()) {
-                val lines = word.personalNotes.split("\n")
-                if (lines.any { it.contains("辨析") || it.startsWith("混") }) {
-                    val confusionNote = lines.find { it.contains("辨析") || it.startsWith("混") }
-                    if (confusionNote != null) {
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = stringResource(R.string.confusion_prefix, confusionNote),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.error,
                         )
                     }
                 }

@@ -237,7 +237,6 @@ fun WordListScreen(
                     key = { "word_${it.id}" },
                 ) { word ->
                     val meanings by viewModel.getMeanings(word.id).collectAsState(initial = emptyList())
-                    val exampleSentences by viewModel.getExampleSentences(word.id).collectAsState(initial = emptyList())
                     val dismissState = rememberSwipeToDismissBoxState()
                     val isSelected = selectedWordIds.contains(word.id)
 
@@ -252,7 +251,6 @@ fun WordListScreen(
                         WordCardSelectable(
                             word = word,
                             meanings = meanings,
-                            exampleSentences = exampleSentences,
                             isSelected = isSelected,
                             onClick = { viewModel.toggleSelection(word.id) },
                             onLongClick = { viewModel.toggleSelection(word.id) },
@@ -266,7 +264,6 @@ fun WordListScreen(
                             WordCard(
                                 word = word,
                                 meanings = meanings,
-                                exampleSentences = exampleSentences,
                                 onClick = { onNavigateToWordDetail(word.id) },
                                 onLongClick = { viewModel.toggleSelection(word.id) },
                             )
@@ -340,7 +337,6 @@ fun WordListScreen(
 private fun WordCardSelectable(
     word: Word,
     meanings: List<io.github.nwma_fywf.mineword.data.local.Meaning>,
-    exampleSentences: List<io.github.nwma_fywf.mineword.data.local.ExampleSentence>,
     isSelected: Boolean,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
@@ -363,7 +359,6 @@ private fun WordCardSelectable(
         WordCard(
             word = word,
             meanings = meanings,
-            exampleSentences = exampleSentences,
             onClick = onClick,
             modifier = Modifier.weight(1f)
         )
