@@ -48,6 +48,7 @@ fun FontSettingScreen(
     val fontStyle by viewModel.fontStyle.collectAsState()
     val customFontPath by viewModel.customFontPath.collectAsState()
     val fontScale by viewModel.fontScale.collectAsState()
+    val cornerScale by viewModel.cornerScale.collectAsState()
 
     val fontPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument()
@@ -169,6 +170,46 @@ fun FontSettingScreen(
 
             Text(
                 text = "当前缩放: ${(fontScale * 100).toInt()}%",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(top = 4.dp)
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Text(
+                text = "圆角调整",
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "┌",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Slider(
+                    value = cornerScale,
+                    onValueChange = { viewModel.setCornerScale(it) },
+                    valueRange = 0.5f..2.0f,
+                    steps = 5,
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(horizontal = 8.dp)
+                )
+                Text(
+                    text = "┌",
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+
+            Text(
+                text = "当前缩放: ${(cornerScale * 100).toInt()}%",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(top = 4.dp)

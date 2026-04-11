@@ -5,6 +5,7 @@ import android.graphics.Typeface
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
@@ -12,14 +13,18 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.nwma_fywf.mineword.data.local.FontStyle
 import io.github.nwma_fywf.mineword.data.local.ThemeMode
-import androidx.compose.ui.text.TextStyle
+
+val LocalCornerScale: ProvidableCompositionLocal<Float> = staticCompositionLocalOf { 1.0f }
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -43,6 +48,7 @@ fun MineWordTheme(
     customSecondaryColor: Int? = null,
     customTertiaryColor: Int? = null,
     fontScale: Float = 1.0f,
+    cornerScale: Float = 1.0f,
     content: @Composable () -> Unit
 ) {
     val darkTheme = when (themeMode) {
@@ -112,11 +118,24 @@ fun MineWordTheme(
         )
     }
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = typography,
-        content = content
+    val shapes = Shapes(
+        extraSmall = androidx.compose.foundation.shape.RoundedCornerShape(4.dp * cornerScale),
+        small = androidx.compose.foundation.shape.RoundedCornerShape(8.dp * cornerScale),
+        medium = androidx.compose.foundation.shape.RoundedCornerShape(12.dp * cornerScale),
+        large = androidx.compose.foundation.shape.RoundedCornerShape(16.dp * cornerScale),
+        extraLarge = androidx.compose.foundation.shape.RoundedCornerShape(28.dp * cornerScale)
     )
+
+    CompositionLocalProvider(
+        LocalCornerScale provides cornerScale
+    ) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = typography,
+            shapes = shapes,
+            content = content
+        )
+    }
 }
 
 private fun createCustomTypography(fontPath: String): androidx.compose.material3.Typography {

@@ -36,6 +36,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import io.github.nwma_fywf.mineword.R
+import io.github.nwma_fywf.mineword.ui.theme.LocalCornerScale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -164,10 +165,13 @@ private fun ModeCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val cornerScale = LocalCornerScale.current
+    
     Card(
         onClick = onClick,
         modifier = modifier
             .height(120.dp),
+        shape = MaterialTheme.shapes.large,
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant
         )

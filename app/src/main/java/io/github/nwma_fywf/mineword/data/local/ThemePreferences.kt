@@ -35,8 +35,9 @@ class ThemePreferences(private val context: Context) {
         private val USE_DYNAMIC_COLOR_KEY = booleanPreferencesKey("use_dynamic_color")
         private val FONT_STYLE_KEY = stringPreferencesKey("font_style")
         private val CUSTOM_FONT_PATH_KEY = stringPreferencesKey("custom_font_path")
-        private val FONT_SCALE_KEY = floatPreferencesKey("font_scale")
-        private val CUSTOM_PRIMARY_KEY = intPreferencesKey("custom_primary")
+private val FONT_SCALE_KEY = floatPreferencesKey("font_scale")
+    private val CORNER_SCALE_KEY = floatPreferencesKey("corner_scale")
+    private val CUSTOM_PRIMARY_KEY = intPreferencesKey("custom_primary")
         private val CUSTOM_SECONDARY_KEY = intPreferencesKey("custom_secondary")
         private val CUSTOM_TERTIARY_KEY = intPreferencesKey("custom_tertiary")
         private val REVIEW_REMINDER_ENABLED_KEY = booleanPreferencesKey("review_reminder_enabled")
@@ -92,9 +93,19 @@ class ThemePreferences(private val context: Context) {
         preferences[FONT_SCALE_KEY] ?: 1.0f
     }
 
+    val cornerScale: Flow<Float> = context.dataStore.data.map { preferences ->
+        preferences[CORNER_SCALE_KEY] ?: 1.0f
+    }
+
     suspend fun setFontScale(scale: Float) {
         context.dataStore.edit { preferences ->
             preferences[FONT_SCALE_KEY] = scale.coerceIn(0.5f, 2.0f)
+        }
+    }
+
+    suspend fun setCornerScale(scale: Float) {
+        context.dataStore.edit { preferences ->
+            preferences[CORNER_SCALE_KEY] = scale.coerceIn(0.5f, 2.0f)
         }
     }
 

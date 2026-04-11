@@ -38,6 +38,13 @@ class FontSettingViewModel(
             initialValue = 1.0f
         )
 
+    val cornerScale: StateFlow<Float> = themePreferences.cornerScale
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = 1.0f
+        )
+
     fun setFontStyle(style: FontStyle) {
         viewModelScope.launch {
             themePreferences.setFontStyle(style)
@@ -47,6 +54,12 @@ class FontSettingViewModel(
     fun setFontScale(scale: Float) {
         viewModelScope.launch {
             themePreferences.setFontScale(scale)
+        }
+    }
+
+    fun setCornerScale(scale: Float) {
+        viewModelScope.launch {
+            themePreferences.setCornerScale(scale)
         }
     }
 

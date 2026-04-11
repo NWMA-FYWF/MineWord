@@ -40,6 +40,7 @@ class MainActivity : ComponentActivity() {
             val customSecondaryColor by application.themePreferences.customSecondaryColor.collectAsState(initial = null)
             val customTertiaryColor by application.themePreferences.customTertiaryColor.collectAsState(initial = null)
             val fontScale by application.themePreferences.fontScale.collectAsState(initial = 1.0f)
+            val cornerScale by application.themePreferences.cornerScale.collectAsState(initial = 1.0f)
             
             MineWordApp(
                 application = application,
@@ -51,7 +52,8 @@ class MainActivity : ComponentActivity() {
                 customPrimaryColor = customPrimaryColor,
                 customSecondaryColor = customSecondaryColor,
                 customTertiaryColor = customTertiaryColor,
-                fontScale = fontScale
+                fontScale = fontScale,
+                cornerScale = cornerScale
             )
         }
     }

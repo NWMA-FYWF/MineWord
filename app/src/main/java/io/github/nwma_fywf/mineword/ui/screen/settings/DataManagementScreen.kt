@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import io.github.nwma_fywf.mineword.R
+import io.github.nwma_fywf.mineword.ui.theme.LocalCornerScale
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -55,6 +56,7 @@ fun DataManagementScreen(
     val importResultDialogState by viewModel.importResultDialogState.collectAsState()
     val exportResult by viewModel.exportResult.collectAsState()
     val clearDataDialogState by viewModel.clearDataDialogState.collectAsState()
+    val cornerScale = LocalCornerScale.current
     val context = LocalContext.current
 
     val exportLauncher = rememberLauncherForActivityResult(
@@ -223,7 +225,7 @@ fun DataManagementScreen(
         ) {
             Surface(
                 modifier = Modifier.size(120.dp),
-                shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+                shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp * cornerScale),
                 color = Color(0xFF2D2D2D)
             ) {
                 Box(

@@ -20,7 +20,9 @@ import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import io.github.nwma_fywf.mineword.ui.theme.LocalCornerScale
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,6 +38,8 @@ fun SettingsScreen(
     onNavigateToDataManagement: () -> Unit,
     onNavigateToLearningSetting: () -> Unit
 ) {
+    val cornerScale = LocalCornerScale.current
+    
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -48,39 +52,63 @@ fun SettingsScreen(
             modifier = Modifier.padding(bottom = 24.dp)
         )
 
-        SettingsEntryCard(
-            icon = Icons.Default.Palette,
-            title = "主题设置",
-            subtitle = "主题模式、动态颜色、主题色",
-            onClick = onNavigateToThemeSetting
-        )
+        Surface(
+            shape = MaterialTheme.shapes.medium,
+            color = MaterialTheme.colorScheme.surface,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            SettingsEntryCard(
+                icon = Icons.Default.Palette,
+                title = "主题设置",
+                subtitle = "主题模式、动态颜色、主题色",
+                onClick = onNavigateToThemeSetting
+            )
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        SettingsEntryCard(
-            icon = Icons.Default.FontDownload,
-            title = "字体设置",
-            subtitle = "字体样式、自定义字体",
-            onClick = onNavigateToFontSetting
-        )
+        Surface(
+            shape = MaterialTheme.shapes.medium,
+            color = MaterialTheme.colorScheme.surface,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            SettingsEntryCard(
+                icon = Icons.Default.FontDownload,
+                title = "字体设置",
+                subtitle = "字体样式、自定义字体",
+                onClick = onNavigateToFontSetting
+            )
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        SettingsEntryCard(
-            icon = Icons.Default.DataUsage,
-            title = "数据管理",
-            subtitle = "导出、导入、清空数据",
-            onClick = onNavigateToDataManagement
-        )
+        Surface(
+            shape = MaterialTheme.shapes.medium,
+            color = MaterialTheme.colorScheme.surface,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            SettingsEntryCard(
+                icon = Icons.Default.DataUsage,
+                title = "数据管理",
+                subtitle = "导出、导入、清空数据",
+                onClick = onNavigateToDataManagement
+            )
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        SettingsEntryCard(
-            icon = Icons.Default.School,
-            title = "学习设置",
-            subtitle = "复习提醒、提醒时间",
-            onClick = onNavigateToLearningSetting
-        )
+        Surface(
+            shape = MaterialTheme.shapes.medium,
+            color = MaterialTheme.colorScheme.surface,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            SettingsEntryCard(
+                icon = Icons.Default.School,
+                title = "学习设置",
+                subtitle = "复习提醒、提醒时间",
+                onClick = onNavigateToLearningSetting
+            )
+        }
     }
 }
 
