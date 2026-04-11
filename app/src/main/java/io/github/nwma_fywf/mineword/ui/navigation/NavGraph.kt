@@ -166,15 +166,19 @@ fun NavGraph(
             )
             QuizHomeScreen(
                 viewModel = viewModel,
-                onSelectMode = { mode -> navController.navigate(Screen.QuizPlay.createRoute(mode.name)) },
+                onSelectMode = { mode, count -> navController.navigate(Screen.QuizPlay.createRoute(mode.name, count)) },
                 onNavigateToWrongAnswer = { navController.navigate(Screen.WrongAnswer.route) }
             )
         }
         composable(
             route = Screen.QuizPlay.route,
-            arguments = listOf(navArgument("mode") { type = NavType.StringType })
+            arguments = listOf(
+                navArgument("mode") { type = NavType.StringType },
+                navArgument("count") { type = NavType.IntType }
+            )
         ) { backStackEntry ->
             val modeString = backStackEntry.arguments?.getString("mode") ?: return@composable
+            val count = backStackEntry.arguments?.getInt("count") ?: -1
             val viewModel: QuizViewModel = viewModel(
                 factory = QuizViewModel.provideFactory(repository)
             )
@@ -188,7 +192,7 @@ fun NavGraph(
             } else if (mode == QuizViewModel.QuizMode.QUIZ_WRONG_ANSWERS) {
                 viewModel.loadWrongAnswerWords()
             } else {
-                viewModel.setModeAndStart(mode)
+                viewModel.setModeAndStart(mode, count)
             }
             QuizScreen(
                 viewModel = viewModel,
@@ -201,7 +205,7 @@ fun NavGraph(
             )
             ReviewScreen(
                 viewModel = viewModel,
-                onStartReview = { mode -> navController.navigate(Screen.QuizPlay.createRoute(mode.name)) }
+                onStartReview = { mode -> navController.navigate(Screen.QuizPlay.createRoute(mode.name, -1)) }
             )
         }
         composable(Screen.WrongAnswer.route) {
@@ -212,7 +216,7 @@ fun NavGraph(
                 viewModel = viewModel,
                 onNavigateBack = { navController.popBackStack() },
                 onNavigateToWordDetail = { wordId -> navController.navigate(Screen.WordDetail.createRoute(wordId)) },
-                onNavigateToQuiz = { navController.navigate(Screen.QuizPlay.createRoute(QuizViewModel.QuizMode.QUIZ_WRONG_ANSWERS.name)) }
+                onNavigateToQuiz = { navController.navigate(Screen.QuizPlay.createRoute(QuizViewModel.QuizMode.QUIZ_WRONG_ANSWERS.name, -1)) }
             )
         }
         composable(Screen.Stats.route) {

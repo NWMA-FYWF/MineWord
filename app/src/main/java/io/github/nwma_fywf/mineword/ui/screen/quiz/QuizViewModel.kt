@@ -64,6 +64,9 @@ class QuizViewModel(private val repository: WordRepository) : ViewModel() {
     private val _totalCount = MutableStateFlow(0)
     val totalCount: StateFlow<Int> = _totalCount
 
+    private val _quizCountLimit = MutableStateFlow(-1)
+    val quizCountLimit: StateFlow<Int> = _quizCountLimit
+
     sealed class QuizState {
         data object Idle : QuizState()
         data object WaitingInput : QuizState()
@@ -118,6 +121,16 @@ class QuizViewModel(private val repository: WordRepository) : ViewModel() {
             _quizState.value = QuizState.Idle
             return
         }
+
+        val limit = _quizCountLimit.value
+        if (limit > 0 && _totalCount.value >= limit) {
+            _quizState.value = QuizState.Finished(
+                correctCount = _correctCount.value,
+                wrongCount = _wrongCount.value
+            )
+            return
+        }
+
         val randomWord = words.random()
         _currentWord.value = randomWord
         _userInput.value = ""
@@ -321,8 +334,12 @@ class QuizViewModel(private val repository: WordRepository) : ViewModel() {
         selectRandomWord()
     }
 
-    fun setModeAndStart(mode: QuizMode) {
+    fun setModeAndStart(mode: QuizMode, countLimit: Int = -1) {
         _quizMode.value = mode
+        _quizCountLimit.value = countLimit
+        _correctCount.value = 0
+        _wrongCount.value = 0
+        _totalCount.value = 0
         _userInput.value = ""
         if (mode == QuizMode.REVIEW) {
             _quizState.value = QuizState.Idle

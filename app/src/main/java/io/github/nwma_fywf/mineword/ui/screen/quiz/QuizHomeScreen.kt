@@ -8,26 +8,31 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import io.github.nwma_fywf.mineword.R
@@ -35,10 +40,14 @@ import io.github.nwma_fywf.mineword.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QuizHomeScreen(
-    onSelectMode: (QuizViewModel.QuizMode) -> Unit,
+    onSelectMode: (QuizViewModel.QuizMode, Int) -> Unit,
     onNavigateToWrongAnswer: () -> Unit,
     viewModel: QuizHomeViewModel? = null,
 ) {
+    val dueReviewCount by viewModel?.dueReviewCount?.collectAsState(initial = 0) ?: remember { mutableStateOf(0) }
+    var showCountDialog by remember { mutableStateOf(false) }
+    var pendingMode by remember { mutableStateOf<QuizViewModel.QuizMode?>(null) }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -62,7 +71,10 @@ fun QuizHomeScreen(
                     rowModes.forEach { mode ->
                         ModeCard(
                             mode = mode,
-                            onClick = { onSelectMode(mode) },
+                            onClick = {
+                                pendingMode = mode
+                                showCountDialog = true
+                            },
                             modifier = Modifier.weight(1f)
                         )
                     }
@@ -104,6 +116,22 @@ fun QuizHomeScreen(
                 }
             }
         }
+    }
+
+    if (showCountDialog && pendingMode != null) {
+        QuizCountDialog(
+            onDismiss = {
+                showCountDialog = false
+                pendingMode = null
+            },
+            onConfirm = { count ->
+                pendingMode?.let { mode ->
+                    onSelectMode(mode, count)
+                }
+                showCountDialog = false
+                pendingMode = null
+            }
+        )
     }
 }
 
@@ -157,4 +185,78 @@ private fun ModeCard(
             )
         }
     }
+}
+
+@Composable
+private fun QuizCountDialog(
+    onDismiss: () -> Unit,
+    onConfirm: (Int) -> Unit,
+) {
+    val countOptions = listOf(10, 20, 30, 50)
+    var selectedCount by remember { mutableStateOf(20) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.select_quiz_count)) },
+        text = {
+            Column(Modifier.selectableGroup()) {
+                countOptions.forEach { count ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp)
+                            .selectable(
+                                selected = selectedCount == count,
+                                onClick = { selectedCount = count },
+                                role = Role.RadioButton
+                            )
+                            .padding(horizontal = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        RadioButton(
+                            selected = selectedCount == count,
+                            onClick = null
+                        )
+                        Text(
+                            text = "$count ${stringResource(R.string.questions)}",
+                            style = MaterialTheme.typography.bodyLarge,
+                            modifier = Modifier.padding(start = 16.dp)
+                        )
+                    }
+                }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp)
+                        .selectable(
+                            selected = selectedCount == -1,
+                            onClick = { selectedCount = -1 },
+                            role = Role.RadioButton
+                        )
+                        .padding(horizontal = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    RadioButton(
+                        selected = selectedCount == -1,
+                        onClick = null
+                    )
+                    Text(
+                        text = stringResource(R.string.all_questions),
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.padding(start = 16.dp)
+                    )
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = { onConfirm(selectedCount) }) {
+                Text(stringResource(R.string.start_quiz))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.cancel))
+            }
+        }
+    )
 }

@@ -131,6 +131,10 @@
     <string name="exit_quiz_confirm_title">确定要退出测验吗？</string>
     <string name="exit_quiz_confirm_message">当前进度将丢失。</string>
     <string name="quiz_wrong_answers">错题测验</string>
+    <string name="select_quiz_count">选择题目数量</string>
+    <string name="questions">题</string>
+    <string name="all_questions">全部题目</string>
+    <string name="start_quiz">开始测验</string>
 
     <!-- Wrong Answer -->
     <string name="clear_wrong_answers">清空</string>
