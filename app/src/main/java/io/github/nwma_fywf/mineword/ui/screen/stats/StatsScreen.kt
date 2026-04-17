@@ -509,7 +509,9 @@ private fun AccuracyTrendCard(recentStats: List<StatsDay>) {
             Chart(
                 chart = lineChart(),
                 chartModelProducer = chartEntryModelProducer,
-                startAxis = rememberStartAxis(),
+                startAxis = rememberStartAxis(
+                    valueFormatter = { value, _ -> "${value.toInt()}%" }
+                ),
                 bottomAxis = rememberBottomAxis(valueFormatter = bottomAxisValueFormatter),
                 modifier = Modifier
                     .fillMaxWidth()
