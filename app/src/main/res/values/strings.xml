@@ -305,6 +305,14 @@
     <string name="clear_data_warning">此操作不可撤销，请确保已备份重要数据。</string>
     <string name="confirm_delete_all">确认删除</string>
 
+    <!-- Settings - Backup -->
+    <string name="backup_settings">备份设置</string>
+    <string name="auto_backup">自动备份</string>
+    <string name="auto_backup_subtitle">定期将数据备份到本地存储</string>
+    <string name="backup_frequency">备份频率</string>
+    <string name="local_backups">本地备份</string>
+    <string name="no_backup_files">暂无本地备份</string>
+
     <!-- Notification -->
     <string name="notification_channel_name">复习提醒</string>
     <string name="notification_channel_description">基于艾宾浩斯遗忘曲线的单词复习提醒</string>

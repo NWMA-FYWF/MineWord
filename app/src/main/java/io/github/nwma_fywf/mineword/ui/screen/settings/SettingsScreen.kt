@@ -14,6 +14,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.Backup
 import androidx.compose.material.icons.filled.DataUsage
 import androidx.compose.material.icons.filled.FontDownload
 import androidx.compose.material.icons.filled.Info
@@ -39,7 +40,8 @@ fun SettingsScreen(
     onNavigateToDataManagement: () -> Unit,
     onNavigateToLearningSetting: () -> Unit,
     onNavigateToStatsSetting: () -> Unit,
-    onNavigateToAbout: () -> Unit
+    onNavigateToAbout: () -> Unit,
+    onNavigateToBackupSettings: () -> Unit
 ) {
     val cornerScale = LocalCornerScale.current
     
@@ -95,6 +97,21 @@ fun SettingsScreen(
                 title = "数据管理",
                 subtitle = "导出、导入、清空数据",
                 onClick = onNavigateToDataManagement
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Surface(
+            shape = MaterialTheme.shapes.medium,
+            color = MaterialTheme.colorScheme.surface,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            SettingsEntryCard(
+                icon = Icons.Default.Backup,
+                title = "备份设置",
+                subtitle = "自动备份、备份记录",
+                onClick = onNavigateToBackupSettings
             )
         }
 

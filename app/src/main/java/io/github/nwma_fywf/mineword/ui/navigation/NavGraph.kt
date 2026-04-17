@@ -37,6 +37,8 @@ import io.github.nwma_fywf.mineword.ui.screen.settings.LearningSettingViewModel
 import io.github.nwma_fywf.mineword.ui.screen.settings.StatsSettingScreen
 import io.github.nwma_fywf.mineword.ui.screen.settings.StatsSettingViewModel
 import io.github.nwma_fywf.mineword.ui.screen.settings.AboutScreen
+import io.github.nwma_fywf.mineword.ui.screen.settings.BackupSettingsScreen
+import io.github.nwma_fywf.mineword.ui.screen.settings.BackupSettingsViewModel
 import io.github.nwma_fywf.mineword.ui.screen.stats.StatsScreen
 import io.github.nwma_fywf.mineword.ui.screen.stats.StatsViewModel
 import io.github.nwma_fywf.mineword.ui.screen.worddetail.WordDetailScreen
@@ -254,7 +256,8 @@ fun NavGraph(
                 onNavigateToDataManagement = { navController.navigate(Screen.DataManagement.route) },
                 onNavigateToLearningSetting = { navController.navigate(Screen.LearningSetting.route) },
                 onNavigateToStatsSetting = { navController.navigate(Screen.StatsSetting.route) },
-                onNavigateToAbout = { navController.navigate(Screen.About.route) }
+                onNavigateToAbout = { navController.navigate(Screen.About.route) },
+                onNavigateToBackupSettings = { navController.navigate(Screen.BackupSettings.route) }
             )
         }
         composable(Screen.ThemeSetting.route) {
@@ -308,6 +311,15 @@ fun NavGraph(
         }
         composable(Screen.About.route) {
             AboutScreen(
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+        composable(Screen.BackupSettings.route) {
+            val viewModel: BackupSettingsViewModel = viewModel(
+                factory = BackupSettingsViewModel.provideFactory(themePreferences, context)
+            )
+            BackupSettingsScreen(
+                viewModel = viewModel,
                 onNavigateBack = { navController.popBackStack() }
             )
         }

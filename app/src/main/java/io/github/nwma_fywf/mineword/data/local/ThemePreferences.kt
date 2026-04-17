@@ -47,6 +47,14 @@ private val FONT_SCALE_KEY = floatPreferencesKey("font_scale")
         private val STATS_TAG2_KEY = stringPreferencesKey("stats_tag2")
         private val DAILY_NEW_WORD_GOAL_KEY = intPreferencesKey("daily_new_word_goal")
         private val DAILY_REVIEW_GOAL_KEY = intPreferencesKey("daily_review_goal")
+        private val AUTO_BACKUP_ENABLED_KEY = booleanPreferencesKey("auto_backup_enabled")
+        private val AUTO_BACKUP_FREQUENCY_KEY = stringPreferencesKey("auto_backup_frequency")
+    }
+
+    enum class BackupFrequency(val displayName: String, val intervalDays: Int) {
+        DAILY("每天", 1),
+        EVERY_3_DAYS("每3天", 3),
+        WEEKLY("每周", 7)
     }
 
     val themeMode: Flow<ThemeMode> = context.dataStore.data.map { preferences ->
@@ -215,6 +223,31 @@ private val FONT_SCALE_KEY = floatPreferencesKey("font_scale")
     suspend fun setDailyReviewGoal(goal: Int) {
         context.dataStore.edit { preferences ->
             preferences[DAILY_REVIEW_GOAL_KEY] = goal.coerceIn(0, 100)
+        }
+    }
+
+    val autoBackupEnabled: Flow<Boolean> = context.dataStore.data.map { preferences ->
+        preferences[AUTO_BACKUP_ENABLED_KEY] ?: false
+    }
+
+    val autoBackupFrequency: Flow<BackupFrequency> = context.dataStore.data.map { preferences ->
+        val freqString = preferences[AUTO_BACKUP_FREQUENCY_KEY] ?: BackupFrequency.DAILY.name
+        try {
+            BackupFrequency.valueOf(freqString)
+        } catch (e: IllegalArgumentException) {
+            BackupFrequency.DAILY
+        }
+    }
+
+    suspend fun setAutoBackupEnabled(enabled: Boolean) {
+        context.dataStore.edit { preferences ->
+            preferences[AUTO_BACKUP_ENABLED_KEY] = enabled
+        }
+    }
+
+    suspend fun setAutoBackupFrequency(frequency: BackupFrequency) {
+        context.dataStore.edit { preferences ->
+            preferences[AUTO_BACKUP_FREQUENCY_KEY] = frequency.name
         }
     }
 }
