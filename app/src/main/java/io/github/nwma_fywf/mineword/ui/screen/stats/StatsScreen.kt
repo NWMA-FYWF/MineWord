@@ -81,6 +81,9 @@ fun StatsScreen(
                 item {
                     AccuracyTrendCard(recentStats = recentStats)
                 }
+                item {
+                    LearningTrendCard(recentStats = recentStats)
+                }
             }
 
             if (recentStats.isEmpty()) {
@@ -518,5 +521,79 @@ private fun AccuracyTrendCard(recentStats: List<StatsDay>) {
                     .height(180.dp)
             )
         }
+    }
+}
+
+@Composable
+private fun LearningTrendCard(recentStats: List<StatsDay>) {
+    val newWordsEntries = recentStats.mapIndexed { index, statsDay ->
+        entryOf(index.toFloat(), statsDay.newWordsCount.toFloat())
+    }
+    val reviewedEntries = recentStats.mapIndexed { index, statsDay ->
+        entryOf(index.toFloat(), statsDay.reviewedWordsCount.toFloat())
+    }
+    val chartEntryModelProducer = remember(newWordsEntries, reviewedEntries) {
+        ChartEntryModelProducer(newWordsEntries, reviewedEntries)
+    }
+    val dateLabels = recentStats.map { it.dateLabel }
+
+    val bottomAxisValueFormatter = AxisValueFormatter<AxisPosition.Horizontal.Bottom> { value, _ ->
+        dateLabels.getOrElse(value.toInt()) { "" }
+    }
+
+    Card(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Text(
+                text = stringResource(R.string.learning_trend),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.primary
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                LegendItem(color = MaterialTheme.colorScheme.secondary, label = "复习")
+                LegendItem(color = MaterialTheme.colorScheme.primary, label = "新词")
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Chart(
+                chart = lineChart(),
+                chartModelProducer = chartEntryModelProducer,
+                startAxis = rememberStartAxis(),
+                bottomAxis = rememberBottomAxis(valueFormatter = bottomAxisValueFormatter),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(180.dp)
+            )
+        }
+    }
+}
+
+@Composable
+private fun LegendItem(
+    color: Color,
+    label: String
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        Canvas(modifier = Modifier.size(8.dp)) {
+            drawCircle(color = color)
+        }
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
     }
 }
