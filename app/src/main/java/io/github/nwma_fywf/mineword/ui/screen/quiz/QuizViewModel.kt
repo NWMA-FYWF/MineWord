@@ -87,6 +87,7 @@ class QuizViewModel(private val repository: WordRepository) : ViewModel() {
         data class WaitingChoice(
             val word: Word,
             val options: List<ChoiceOption>,
+            val selectedOption: ChoiceOption? = null,
             val isCorrectAnswered: Boolean? = null
         ) : QuizState()
         data class Finished(
@@ -385,6 +386,15 @@ class QuizViewModel(private val repository: WordRepository) : ViewModel() {
     fun selectChoiceOption(option: ChoiceOption) {
         val state = _quizState.value
         if (state is QuizViewModel.QuizState.WaitingChoice && state.isCorrectAnswered == null) {
+            // 仅记录选择，不立即判断答案
+            _quizState.value = state.copy(selectedOption = option)
+        }
+    }
+
+    fun confirmChoiceOption() {
+        val state = _quizState.value
+        if (state is QuizViewModel.QuizState.WaitingChoice && state.selectedOption != null && state.isCorrectAnswered == null) {
+            val option = state.selectedOption
             if (!option.isCorrect) {
                 _wrongCount.value++
                 _totalCount.value++

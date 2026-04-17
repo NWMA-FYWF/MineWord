@@ -176,6 +176,7 @@ fun QuizScreen(
                                 meanings = currentMeanings,
                                 totalCount = totalCount,
                                 onSelectOption = viewModel::selectChoiceOption,
+                                onConfirm = viewModel::confirmChoiceOption,
                                 onNext = viewModel::nextChoiceWord,
                                 onFinish = { showExitConfirm = true },
                             )
@@ -404,6 +405,7 @@ private fun ChoiceQuizContent(
     meanings: List<io.github.nwma_fywf.mineword.data.local.Meaning>,
     totalCount: Int,
     onSelectOption: (QuizViewModel.ChoiceOption) -> Unit,
+    onConfirm: () -> Unit,
     onNext: () -> Unit,
     onFinish: () -> Unit,
 ) {
@@ -424,22 +426,29 @@ private fun ChoiceQuizContent(
     )
     Spacer(modifier = Modifier.height(24.dp))
 
+    val hasSelected = state.selectedOption != null
+    val isAnswered = state.isCorrectAnswered != null
+
     state.options.forEach { option ->
         val buttonColors = when {
-            state.isCorrectAnswered == null -> ButtonDefaults.outlinedButtonColors()
-            option.isCorrect -> ButtonDefaults.buttonColors(
+            isAnswered && option.isCorrect -> ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
                 contentColor = MaterialTheme.colorScheme.onPrimaryContainer
             )
-            else -> ButtonDefaults.outlinedButtonColors(
+            isAnswered && !option.isCorrect && option == state.selectedOption -> ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.errorContainer,
                 contentColor = MaterialTheme.colorScheme.onErrorContainer
             )
+            hasSelected && !isAnswered && option == state.selectedOption -> ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            )
+            else -> ButtonDefaults.outlinedButtonColors()
         }
 
         OutlinedButton(
             onClick = { onSelectOption(option) },
-            enabled = state.isCorrectAnswered == null,
+            enabled = !isAnswered,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 4.dp),
@@ -452,14 +461,26 @@ private fun ChoiceQuizContent(
         }
     }
 
-    if (state.isCorrectAnswered != null) {
+    // 确认按钮：选择后、回答前显示
+    if (hasSelected && !isAnswered) {
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(
+            onClick = onConfirm,
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text(stringResource(R.string.confirm))
+        }
+    }
+
+    // 结果显示：回答后显示
+    if (isAnswered) {
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = if (state.isCorrectAnswered) stringResource(R.string.answer_correct) else stringResource(R.string.answer_incorrect),
+            text = if (state.isCorrectAnswered == true) stringResource(R.string.answer_correct) else stringResource(R.string.answer_incorrect),
             style = MaterialTheme.typography.titleMedium,
-            color = if (state.isCorrectAnswered) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error,
+            color = if (state.isCorrectAnswered == true) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error,
         )
-        if (!state.isCorrectAnswered) {
+        if (state.isCorrectAnswered == false) {
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = stringResource(R.string.correct_answer_is),
