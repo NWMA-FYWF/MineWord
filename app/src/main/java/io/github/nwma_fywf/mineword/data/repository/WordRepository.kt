@@ -16,7 +16,10 @@ import io.github.nwma_fywf.mineword.data.local.WordDao
 import io.github.nwma_fywf.mineword.data.local.WrongAnswer
 import io.github.nwma_fywf.mineword.data.local.WrongAnswerDao
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.update
 import java.util.concurrent.TimeUnit
 
 enum class SortBy {
@@ -72,6 +75,14 @@ class WordRepository(
     fun getWordsByTag(tag: String): Flow<List<Word>> = wordDao.getWordsByTag(tag)
 
     suspend fun getWordsByTagOnce(tag: String): List<Word> = wordDao.getWordsByTagOnce(tag)
+
+    suspend fun getWordsByTwoTagsOnce(tag1: String, tag2: String): List<Word> = wordDao.getWordsByTwoTagsOnce(tag1, tag2)
+
+    suspend fun getWordsByTwoTagsCount(tag1: String, tag2: String): Int = wordDao.getWordsByTwoTagsOnce(tag1, tag2).size
+
+    fun getWordsByTwoTagsCountFlow(tag1: String, tag2: String): Flow<Int> = flow {
+        emit(getWordsByTwoTagsCount(tag1, tag2))
+    }
 
     suspend fun getWordByWord(word: String): Word? = wordDao.getWordByWord(word)
 

@@ -73,4 +73,7 @@ interface WordDao {
 
     @Query("SELECT * FROM words WHERE tags LIKE '%' || :tag || '%' ORDER BY createdAt DESC")
     suspend fun getWordsByTagOnce(tag: String): List<Word>
+
+    @Query("SELECT * FROM words WHERE (',' || REPLACE(tags, ' ', '') || ',') LIKE '%,' || REPLACE(:tag1, ' ', '') || ',%' AND (',' || REPLACE(tags, ' ', '') || ',') LIKE '%,' || REPLACE(:tag2, ' ', '') || ',%' ORDER BY createdAt DESC")
+    suspend fun getWordsByTwoTagsOnce(tag1: String, tag2: String): List<Word>
 }

@@ -216,6 +216,15 @@
     <string name="word_statistics">词汇统计</string>
     <string name="total_words">单词总数</string>
     <string name="view_detailed_stats">查看详细统计</string>
+    
+    <!-- Stats - Tag Pair Statistics -->
+    <string name="tag_pair_stats">标签组统计</string>
+    <string name="tag1_label">标签 1</string>
+    <string name="tag2_label">标签 2</string>
+    <string name="update_tag_pair_stats">更新统计</string>
+    <string name="current_tag_pair">当前标签组</string>
+    <string name="matching_word_count">匹配单词数量</string>
+    <string name="stats_two_tags_count">%1$s + %2$s 重合</string>
 
     <!-- Settings - Data Management -->
     <string name="data_management">数据管理</string>

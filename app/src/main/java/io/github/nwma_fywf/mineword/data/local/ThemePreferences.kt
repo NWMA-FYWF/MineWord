@@ -43,6 +43,8 @@ private val FONT_SCALE_KEY = floatPreferencesKey("font_scale")
         private val REVIEW_REMINDER_ENABLED_KEY = booleanPreferencesKey("review_reminder_enabled")
         private val REVIEW_REMINDER_HOUR_KEY = intPreferencesKey("review_reminder_hour")
         private val REVIEW_REMINDER_MINUTE_KEY = intPreferencesKey("review_reminder_minute")
+        private val STATS_TAG1_KEY = stringPreferencesKey("stats_tag1")
+        private val STATS_TAG2_KEY = stringPreferencesKey("stats_tag2")
     }
 
     val themeMode: Flow<ThemeMode> = context.dataStore.data.map { preferences ->
@@ -177,5 +179,20 @@ private val FONT_SCALE_KEY = floatPreferencesKey("font_scale")
             .putInt("review_reminder_hour", hour)
             .putInt("review_reminder_minute", minute)
             .apply()
+    }
+    
+    val statsTag1: Flow<String> = context.dataStore.data.map { preferences ->
+        preferences[STATS_TAG1_KEY] ?: ""
+    }
+    
+    val statsTag2: Flow<String> = context.dataStore.data.map { preferences ->
+        preferences[STATS_TAG2_KEY] ?: ""
+    }
+    
+    suspend fun setStatsTags(tag1: String, tag2: String) {
+        context.dataStore.edit { preferences ->
+            preferences[STATS_TAG1_KEY] = tag1
+            preferences[STATS_TAG2_KEY] = tag2
+        }
     }
 }

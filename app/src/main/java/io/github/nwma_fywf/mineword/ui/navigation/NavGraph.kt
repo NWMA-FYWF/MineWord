@@ -34,6 +34,8 @@ import io.github.nwma_fywf.mineword.ui.screen.settings.DataManagementScreen
 import io.github.nwma_fywf.mineword.ui.screen.settings.DataManagementViewModel
 import io.github.nwma_fywf.mineword.ui.screen.settings.LearningSettingScreen
 import io.github.nwma_fywf.mineword.ui.screen.settings.LearningSettingViewModel
+import io.github.nwma_fywf.mineword.ui.screen.settings.StatsSettingScreen
+import io.github.nwma_fywf.mineword.ui.screen.settings.StatsSettingViewModel
 import io.github.nwma_fywf.mineword.ui.screen.stats.StatsScreen
 import io.github.nwma_fywf.mineword.ui.screen.stats.StatsViewModel
 import io.github.nwma_fywf.mineword.ui.screen.worddetail.WordDetailScreen
@@ -231,7 +233,7 @@ fun NavGraph(
         }
         composable(Screen.Stats.route) {
             val viewModel: StatsViewModel = viewModel(
-                factory = StatsViewModel.provideFactory(repository)
+                factory = StatsViewModel.provideFactory(repository, themePreferences)
             )
             StatsScreen(viewModel = viewModel)
         }
@@ -249,7 +251,8 @@ fun NavGraph(
                 onNavigateToFontSetting = { navController.navigate(Screen.FontSetting.route) },
                 onNavigateToStats = { navController.navigate(Screen.Stats.route) },
                 onNavigateToDataManagement = { navController.navigate(Screen.DataManagement.route) },
-                onNavigateToLearningSetting = { navController.navigate(Screen.LearningSetting.route) }
+                onNavigateToLearningSetting = { navController.navigate(Screen.LearningSetting.route) },
+                onNavigateToStatsSetting = { navController.navigate(Screen.StatsSetting.route) }
             )
         }
         composable(Screen.ThemeSetting.route) {
@@ -286,6 +289,19 @@ fun NavGraph(
             LearningSettingScreen(
                 viewModel = viewModel,
                 onNavigateBack = { navController.popBackStack() }
+            )
+        }
+        composable(Screen.StatsSetting.route) {
+            val viewModel: StatsSettingViewModel = viewModel(
+                factory = StatsSettingViewModel.provideFactory(repository, themePreferences)
+            )
+            StatsSettingScreen(
+                viewModel = viewModel,
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToStats = { 
+                    navController.popBackStack()
+                    navController.navigate(Screen.Stats.route)
+                }
             )
         }
     }

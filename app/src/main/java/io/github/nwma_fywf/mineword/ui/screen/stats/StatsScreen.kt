@@ -12,10 +12,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Warning
-import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -183,8 +184,25 @@ private fun OverviewCard(statsOverview: StatsOverview) {
                     color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }
-
-            Spacer(modifier = Modifier.height(8.dp))
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            // 仅当用户配置了标签时才显示标签组统计
+            if (statsOverview.tag1.isNotBlank() && statsOverview.tag2.isNotBlank()) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    StatItem(
+                        icon = Icons.Filled.School,
+                        value = statsOverview.twoTagsCount.toString(),
+                        label = stringResource(R.string.stats_two_tags_count, statsOverview.tag1, statsOverview.tag2),
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }
+                
+                Spacer(modifier = Modifier.height(8.dp))
+            }
 
             val total = statsOverview.totalCorrect + statsOverview.totalWrong
             if (total > 0) {
