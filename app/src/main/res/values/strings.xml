@@ -171,6 +171,7 @@
     <string name="stats_accuracy_rate">正确率</string>
     <string name="stats_accuracy_value">%d%%</string>
     <string name="no_stats_yet">还没有学习数据，开始添加单词并学习吧</string>
+    <string name="no_stats_title">暂无学习记录</string>
     <string name="recent_7_days">近7天学习记录</string>
     <string name="accuracy_trend">正确率趋势</string>
     <string name="learning_trend">学习量趋势</string>
