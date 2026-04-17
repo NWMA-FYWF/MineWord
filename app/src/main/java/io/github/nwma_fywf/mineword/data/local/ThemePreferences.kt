@@ -45,6 +45,8 @@ private val FONT_SCALE_KEY = floatPreferencesKey("font_scale")
         private val REVIEW_REMINDER_MINUTE_KEY = intPreferencesKey("review_reminder_minute")
         private val STATS_TAG1_KEY = stringPreferencesKey("stats_tag1")
         private val STATS_TAG2_KEY = stringPreferencesKey("stats_tag2")
+        private val DAILY_NEW_WORD_GOAL_KEY = intPreferencesKey("daily_new_word_goal")
+        private val DAILY_REVIEW_GOAL_KEY = intPreferencesKey("daily_review_goal")
     }
 
     val themeMode: Flow<ThemeMode> = context.dataStore.data.map { preferences ->
@@ -193,6 +195,26 @@ private val FONT_SCALE_KEY = floatPreferencesKey("font_scale")
         context.dataStore.edit { preferences ->
             preferences[STATS_TAG1_KEY] = tag1
             preferences[STATS_TAG2_KEY] = tag2
+        }
+    }
+
+    val dailyNewWordGoal: Flow<Int> = context.dataStore.data.map { preferences ->
+        preferences[DAILY_NEW_WORD_GOAL_KEY] ?: 10
+    }
+
+    val dailyReviewGoal: Flow<Int> = context.dataStore.data.map { preferences ->
+        preferences[DAILY_REVIEW_GOAL_KEY] ?: 20
+    }
+
+    suspend fun setDailyNewWordGoal(goal: Int) {
+        context.dataStore.edit { preferences ->
+            preferences[DAILY_NEW_WORD_GOAL_KEY] = goal.coerceIn(0, 100)
+        }
+    }
+
+    suspend fun setDailyReviewGoal(goal: Int) {
+        context.dataStore.edit { preferences ->
+            preferences[DAILY_REVIEW_GOAL_KEY] = goal.coerceIn(0, 100)
         }
     }
 }

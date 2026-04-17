@@ -9,8 +9,10 @@ import io.github.nwma_fywf.mineword.data.repository.WordRepository
 import io.github.nwma_fywf.mineword.ui.screen.quiz.QuizViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
 
 data class ReviewWord(
     val word: Word,
@@ -26,6 +28,13 @@ enum class ReviewStatus {
     DUE_DAYS
 }
 
+data class DailyGoalProgress(
+    val newWordsToday: Int = 0,
+    val reviewWordsToday: Int = 0,
+    val newWordGoal: Int = 10,
+    val reviewGoal: Int = 20
+)
+
 class ReviewViewModel(private val repository: WordRepository) : ViewModel() {
 
     private val _reviewWords = MutableStateFlow<List<ReviewWord>>(emptyList())
@@ -34,8 +43,25 @@ class ReviewViewModel(private val repository: WordRepository) : ViewModel() {
     private val _isLoading = MutableStateFlow(true)
     val isLoading: StateFlow<Boolean> = _isLoading
 
+    private val _dailyGoalProgress = MutableStateFlow(DailyGoalProgress())
+    val dailyGoalProgress: StateFlow<DailyGoalProgress> = _dailyGoalProgress
+
     init {
         loadReviewWords()
+        loadDailyGoalProgress()
+    }
+
+    private fun loadDailyGoalProgress() {
+        viewModelScope.launch {
+            val today = TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis()) * TimeUnit.DAYS.toMillis(1)
+            repository.getDailyStatsDao().getStatsForDateFlow(today).collect { stats ->
+                val progress = DailyGoalProgress(
+                    newWordsToday = stats?.newWordsCount ?: 0,
+                    reviewWordsToday = stats?.reviewedWordsCount ?: 0
+                )
+                _dailyGoalProgress.value = progress
+            }
+        }
     }
 
     fun loadReviewWords() {
@@ -78,6 +104,7 @@ class ReviewViewModel(private val repository: WordRepository) : ViewModel() {
             word?.let {
                 repository.recordReview(it.id, it.learningStage)
                 loadReviewWords()
+                loadDailyGoalProgress()
             }
         }
     }

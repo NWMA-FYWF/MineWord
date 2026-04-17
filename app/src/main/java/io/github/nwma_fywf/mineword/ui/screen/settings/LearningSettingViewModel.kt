@@ -35,6 +35,20 @@ class LearningSettingViewModel(
             initialValue = 0
         )
 
+    val dailyNewWordGoal: StateFlow<Int> = themePreferences.dailyNewWordGoal
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = 10
+        )
+
+    val dailyReviewGoal: StateFlow<Int> = themePreferences.dailyReviewGoal
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = 20
+        )
+
     fun setReviewReminderEnabled(enabled: Boolean) {
         viewModelScope.launch {
             themePreferences.setReviewReminderEnabled(enabled)
@@ -44,6 +58,18 @@ class LearningSettingViewModel(
     fun setReviewReminderTime(hour: Int, minute: Int) {
         viewModelScope.launch {
             themePreferences.setReviewReminderTime(hour, minute)
+        }
+    }
+
+    fun setDailyNewWordGoal(goal: Int) {
+        viewModelScope.launch {
+            themePreferences.setDailyNewWordGoal(goal)
+        }
+    }
+
+    fun setDailyReviewGoal(goal: Int) {
+        viewModelScope.launch {
+            themePreferences.setDailyReviewGoal(goal)
         }
     }
 

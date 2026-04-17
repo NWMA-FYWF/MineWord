@@ -334,3 +334,58 @@ fun ClearDataConfirmDialog(
         }
     )
 }
+
+@Composable
+fun NumberPickerDialog(
+    title: String,
+    currentValue: Int,
+    minValue: Int = 0,
+    maxValue: Int = 100,
+    onValueSelected: (Int) -> Unit,
+    onDismiss: () -> Unit
+) {
+    var value by remember { mutableStateOf(currentValue.toString()) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(title) },
+        text = {
+            Column {
+                TextField(
+                    value = value,
+                    onValueChange = { newValue ->
+                        if (newValue.isEmpty()) {
+                            value = ""
+                        } else {
+                            val intValue = newValue.filter { it.isDigit() }.take(3)
+                            value = intValue
+                        }
+                    },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "范围: $minValue - $maxValue",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    val intValue = value.toIntOrNull() ?: currentValue
+                    onValueSelected(intValue.coerceIn(minValue, maxValue))
+                }
+            ) {
+                Text(stringResource(R.string.confirm))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.cancel))
+            }
+        }
+    )
+}

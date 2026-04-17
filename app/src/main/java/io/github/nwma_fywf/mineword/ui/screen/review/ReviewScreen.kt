@@ -1,5 +1,6 @@
 package io.github.nwma_fywf.mineword.ui.screen.review
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,7 +34,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.github.nwma_fywf.mineword.R
@@ -49,6 +54,7 @@ fun ReviewScreen(
 ) {
     val reviewWords by viewModel.reviewWords.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
+    val dailyGoalProgress by viewModel.dailyGoalProgress.collectAsState()
 
     Scaffold(
         topBar = {
@@ -107,6 +113,15 @@ fun ReviewScreen(
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
+                item {
+                    DailyGoalProgressCard(
+                        newWordsToday = dailyGoalProgress.newWordsToday,
+                        newWordGoal = dailyGoalProgress.newWordGoal,
+                        reviewWordsToday = dailyGoalProgress.reviewWordsToday,
+                        reviewGoal = dailyGoalProgress.reviewGoal
+                    )
+                }
+
                 val overdueCount = reviewWords.count { it.status == ReviewStatus.OVERDUE }
                 val todayCount = reviewWords.count { it.status == ReviewStatus.DUE_TODAY }
                 val tomorrowCount = reviewWords.count { it.status == ReviewStatus.DUE_TOMORROW }
@@ -138,6 +153,115 @@ fun ReviewScreen(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun DailyGoalProgressCard(
+    newWordsToday: Int,
+    newWordGoal: Int,
+    reviewWordsToday: Int,
+    reviewGoal: Int
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.secondaryContainer
+        )
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            GoalProgressItem(
+                current = newWordsToday,
+                goal = newWordGoal,
+                label = stringResource(R.string.stats_new_words_short),
+                color = MaterialTheme.colorScheme.primary
+            )
+            
+            GoalProgressItem(
+                current = reviewWordsToday,
+                goal = reviewGoal,
+                label = stringResource(R.string.stats_reviewed_short),
+                color = MaterialTheme.colorScheme.secondary
+            )
+        }
+    }
+}
+
+@Composable
+private fun GoalProgressItem(
+    current: Int,
+    goal: Int,
+    label: String,
+    color: Color
+) {
+    val progress = if (goal > 0) (current.toFloat() / goal).coerceIn(0f, 1f) else 0f
+    val isCompleted = current >= goal
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.size(56.dp)
+        ) {
+            CircularProgressIndicator(
+                progress = progress,
+                color = if (isCompleted) MaterialTheme.colorScheme.primary else color,
+                backgroundColor = color.copy(alpha = 0.2f),
+                strokeWidth = 4.dp,
+                modifier = Modifier.size(56.dp)
+            )
+            Text(
+                text = "$current",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = if (isCompleted) MaterialTheme.colorScheme.primary else color
+            )
+        }
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSecondaryContainer
+        )
+        Text(
+            text = "/ $goal",
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.7f)
+        )
+    }
+}
+
+@Composable
+private fun CircularProgressIndicator(
+    progress: Float,
+    color: Color,
+    backgroundColor: Color,
+    strokeWidth: androidx.compose.ui.unit.Dp,
+    modifier: Modifier = Modifier
+) {
+    Canvas(modifier = modifier) {
+        val sweepAngle = 360f * progress
+        drawArc(
+            color = backgroundColor,
+            startAngle = -90f,
+            sweepAngle = 360f,
+            useCenter = false,
+            style = Stroke(width = strokeWidth.toPx(), cap = StrokeCap.Round)
+        )
+        drawArc(
+            color = color,
+            startAngle = -90f,
+            sweepAngle = sweepAngle,
+            useCenter = false,
+            style = Stroke(width = strokeWidth.toPx(), cap = StrokeCap.Round)
+        )
     }
 }
 

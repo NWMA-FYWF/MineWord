@@ -27,10 +27,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.nwma_fywf.mineword.R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -42,8 +40,12 @@ fun LearningSettingScreen(
     val reviewReminderEnabled by viewModel.reviewReminderEnabled.collectAsState()
     val reviewReminderHour by viewModel.reviewReminderHour.collectAsState()
     val reviewReminderMinute by viewModel.reviewReminderMinute.collectAsState()
+    val dailyNewWordGoal by viewModel.dailyNewWordGoal.collectAsState()
+    val dailyReviewGoal by viewModel.dailyReviewGoal.collectAsState()
 
     var showTimePickerDialog by remember { mutableStateOf(false) }
+    var showNewWordGoalDialog by remember { mutableStateOf(false) }
+    var showReviewGoalDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -67,6 +69,66 @@ fun LearningSettingScreen(
                 .padding(16.dp)
                 .verticalScroll(rememberScrollState())
         ) {
+            Text(
+                text = stringResource(R.string.daily_goal),
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { showNewWordGoalDialog = true }
+                    .padding(vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = stringResource(R.string.daily_new_word_goal),
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                    Text(
+                        text = stringResource(R.string.daily_new_word_goal_subtitle),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+                Text(
+                    text = stringResource(R.string.daily_goal_format, dailyNewWordGoal),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+
+            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { showReviewGoalDialog = true }
+                    .padding(vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = stringResource(R.string.daily_review_goal),
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                    Text(
+                        text = stringResource(R.string.daily_review_goal_subtitle),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+                Text(
+                    text = stringResource(R.string.daily_goal_format, dailyReviewGoal),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+
+            HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
+
             Text(
                 text = stringResource(R.string.review_reminder),
                 style = MaterialTheme.typography.titleLarge,
@@ -137,6 +199,30 @@ fun LearningSettingScreen(
                 showTimePickerDialog = false
             },
             onDismiss = { showTimePickerDialog = false }
+        )
+    }
+
+    if (showNewWordGoalDialog) {
+        NumberPickerDialog(
+            title = stringResource(R.string.daily_new_word_goal),
+            currentValue = dailyNewWordGoal,
+            onValueSelected = { goal ->
+                viewModel.setDailyNewWordGoal(goal)
+                showNewWordGoalDialog = false
+            },
+            onDismiss = { showNewWordGoalDialog = false }
+        )
+    }
+
+    if (showReviewGoalDialog) {
+        NumberPickerDialog(
+            title = stringResource(R.string.daily_review_goal),
+            currentValue = dailyReviewGoal,
+            onValueSelected = { goal ->
+                viewModel.setDailyReviewGoal(goal)
+                showReviewGoalDialog = false
+            },
+            onDismiss = { showReviewGoalDialog = false }
         )
     }
 }

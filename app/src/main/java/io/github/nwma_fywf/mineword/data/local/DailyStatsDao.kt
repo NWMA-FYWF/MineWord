@@ -14,6 +14,9 @@ interface DailyStatsDao {
     @Query("SELECT * FROM daily_stats WHERE date = :date")
     suspend fun getStatsForDate(date: Long): DailyStats?
 
+    @Query("SELECT * FROM daily_stats WHERE date = :date")
+    fun getStatsForDateFlow(date: Long): Flow<DailyStats?>
+
     @Query("SELECT COALESCE(SUM(newWordsCount), 0) FROM daily_stats")
     fun getTotalNewWordsFlow(): Flow<Int>
 

@@ -248,6 +248,12 @@
     <string name="review_reminder">复习提醒</string>
     <string name="review_reminder_subtitle">基于艾宾浩斯遗忘曲线定时提醒复习</string>
     <string name="reminder_time">提醒时间</string>
+    <string name="daily_goal">每日目标</string>
+    <string name="daily_new_word_goal">每日新词目标</string>
+    <string name="daily_new_word_goal_subtitle">每天学习的新单词数量</string>
+    <string name="daily_review_goal">每日复习目标</string>
+    <string name="daily_review_goal_subtitle">每天复习的单词数量</string>
+    <string name="daily_goal_format">%d 个</string>
 
     <!-- Settings - Time Picker -->
     <string name="set_reminder_time">设置提醒时间</string>
