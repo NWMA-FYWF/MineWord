@@ -28,11 +28,27 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.patrykandpatrick.vico.compose.axis.horizontal.rememberBottomAxis
+import com.patrykandpatrick.vico.compose.axis.vertical.rememberStartAxis
+import com.patrykandpatrick.vico.compose.chart.Chart
+import com.patrykandpatrick.vico.compose.chart.line.lineChart
+import com.patrykandpatrick.vico.compose.component.lineComponent
+import com.patrykandpatrick.vico.compose.component.shapeComponent
+import com.patrykandpatrick.vico.compose.component.textComponent
+import com.patrykandpatrick.vico.compose.dimensions.dimensionsOf
+import com.patrykandpatrick.vico.core.axis.AxisPosition
+import com.patrykandpatrick.vico.core.axis.formatter.AxisValueFormatter
+import com.patrykandpatrick.vico.core.chart.values.AxisValuesOverrider
+import com.patrykandpatrick.vico.core.component.shape.Shapes
+import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
+import com.patrykandpatrick.vico.core.entry.entryOf
 import io.github.nwma_fywf.mineword.R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -61,6 +77,12 @@ fun StatsScreen(
 
             item {
                 OverviewCard(statsOverview = statsOverview)
+            }
+
+            if (recentStats.isNotEmpty()) {
+                item {
+                    AccuracyTrendCard(recentStats = recentStats)
+                }
             }
 
             if (recentStats.isEmpty()) {
@@ -327,6 +349,48 @@ private fun DailyStatsCard(statsDay: StatsDay) {
                     trackColor = MaterialTheme.colorScheme.surfaceVariant
                 )
             }
+        }
+    }
+}
+
+@Composable
+private fun AccuracyTrendCard(recentStats: List<StatsDay>) {
+    val entries = recentStats.mapIndexed { index, statsDay ->
+        entryOf(index.toFloat(), statsDay.accuracyRateFloat)
+    }
+    val chartEntryModelProducer = remember(entries) {
+        ChartEntryModelProducer(entries)
+    }
+    val dateLabels = recentStats.map { it.dateLabel }
+
+    val bottomAxisValueFormatter = AxisValueFormatter<AxisPosition.Horizontal.Bottom> { value, _ ->
+        dateLabels.getOrElse(value.toInt()) { "" }
+    }
+
+    Card(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Text(
+                text = stringResource(R.string.accuracy_trend),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.primary
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Chart(
+                chart = lineChart(),
+                chartModelProducer = chartEntryModelProducer,
+                startAxis = rememberStartAxis(),
+                bottomAxis = rememberBottomAxis(valueFormatter = bottomAxisValueFormatter),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(180.dp)
+            )
         }
     }
 }

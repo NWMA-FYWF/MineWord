@@ -36,7 +36,8 @@ data class StatsDay(
     val correctCount: Int,
     val wrongCount: Int,
     val accuracyRate: Int,
-    val accuracyChange: Int?
+    val accuracyChange: Int?,
+    val accuracyRateFloat: Float
 )
 
 private data class CoreStats(
@@ -124,7 +125,8 @@ class StatsViewModel(
                         correctCount = stats.correctCount,
                         wrongCount = stats.wrongCount,
                         accuracyRate = accuracyRate,
-                        accuracyChange = accuracyChange
+                        accuracyChange = accuracyChange,
+                        accuracyRateFloat = accuracyRate.toFloat()
                     )
                 }
                 _recentStats.value = statsDays

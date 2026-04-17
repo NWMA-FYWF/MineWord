@@ -172,6 +172,7 @@
     <string name="stats_accuracy_value">%d%%</string>
     <string name="no_stats_yet">还没有学习数据，开始添加单词并学习吧</string>
     <string name="recent_7_days">近7天学习记录</string>
+    <string name="accuracy_trend">正确率趋势</string>
     <string name="stats_new_words_short">新增</string>
     <string name="stats_reviewed_short">复习</string>
     <string name="stats_correct_wrong">正确/总题</string>
