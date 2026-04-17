@@ -36,6 +36,7 @@ import io.github.nwma_fywf.mineword.ui.screen.settings.LearningSettingScreen
 import io.github.nwma_fywf.mineword.ui.screen.settings.LearningSettingViewModel
 import io.github.nwma_fywf.mineword.ui.screen.settings.StatsSettingScreen
 import io.github.nwma_fywf.mineword.ui.screen.settings.StatsSettingViewModel
+import io.github.nwma_fywf.mineword.ui.screen.settings.AboutScreen
 import io.github.nwma_fywf.mineword.ui.screen.stats.StatsScreen
 import io.github.nwma_fywf.mineword.ui.screen.stats.StatsViewModel
 import io.github.nwma_fywf.mineword.ui.screen.worddetail.WordDetailScreen
@@ -252,7 +253,8 @@ fun NavGraph(
                 onNavigateToStats = { navController.navigate(Screen.Stats.route) },
                 onNavigateToDataManagement = { navController.navigate(Screen.DataManagement.route) },
                 onNavigateToLearningSetting = { navController.navigate(Screen.LearningSetting.route) },
-                onNavigateToStatsSetting = { navController.navigate(Screen.StatsSetting.route) }
+                onNavigateToStatsSetting = { navController.navigate(Screen.StatsSetting.route) },
+                onNavigateToAbout = { navController.navigate(Screen.About.route) }
             )
         }
         composable(Screen.ThemeSetting.route) {
@@ -302,6 +304,11 @@ fun NavGraph(
                     navController.popBackStack()
                     navController.navigate(Screen.Stats.route)
                 }
+            )
+        }
+        composable(Screen.About.route) {
+            AboutScreen(
+                onNavigateBack = { navController.popBackStack() }
             )
         }
     }

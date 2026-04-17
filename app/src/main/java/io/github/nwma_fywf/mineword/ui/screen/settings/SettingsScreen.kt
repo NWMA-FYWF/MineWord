@@ -16,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.DataUsage
 import androidx.compose.material.icons.filled.FontDownload
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material3.Icon
@@ -37,7 +38,8 @@ fun SettingsScreen(
     onNavigateToStats: () -> Unit,
     onNavigateToDataManagement: () -> Unit,
     onNavigateToLearningSetting: () -> Unit,
-    onNavigateToStatsSetting: () -> Unit
+    onNavigateToStatsSetting: () -> Unit,
+    onNavigateToAbout: () -> Unit
 ) {
     val cornerScale = LocalCornerScale.current
     
@@ -106,7 +108,7 @@ fun SettingsScreen(
             SettingsEntryCard(
                 icon = Icons.Default.School,
                 title = "学习设置",
-                subtitle = "复习提醒、提醒时间",
+                subtitle = "每日目标、复习提醒",
                 onClick = onNavigateToLearningSetting
             )
         }
@@ -123,6 +125,21 @@ fun SettingsScreen(
                 title = "词汇统计",
                 subtitle = "配置标签组统计",
                 onClick = onNavigateToStatsSetting
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Surface(
+            shape = MaterialTheme.shapes.medium,
+            color = MaterialTheme.colorScheme.surface,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            SettingsEntryCard(
+                icon = Icons.Default.Info,
+                title = "关于",
+                subtitle = "版本信息、应用介绍",
+                onClick = onNavigateToAbout
             )
         }
     }

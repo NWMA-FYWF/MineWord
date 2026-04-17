@@ -255,6 +255,25 @@
     <string name="daily_review_goal_subtitle">每天复习的单词数量</string>
     <string name="daily_goal_format">%d 个</string>
 
+    <!-- Settings - About -->
+    <string name="about">关于</string>
+    <string name="version_info">版本 %s</string>
+    <string name="app_description">MineWord 是一款简洁高效的背单词应用，支持离线使用、艾宾浩斯记忆曲线、科学复习策略，帮助你轻松掌握词汇。</string>
+    <string name="about_features">功能特点</string>
+    <string name="feature_offline">离线使用，无需网络</string>
+    <string name="feature_spaced_repetition">艾宾浩斯记忆曲线</string>
+    <string name="feature_stats">学习数据统计</string>
+    <string name="feature_export">数据导入导出</string>
+    <string name="developed_with">用心打造</string>
+    <string name="copyright">© 2026 MineWord. All rights reserved.</string>
+    <string name="open_source_licenses">开源协议</string>
+    <string name="open_source_intro">本应用使用的开源库均采用 Apache License 2.0 协议：</string>
+    <string name="open_source_jetpack">Jetpack Compose — Apache 2.0</string>
+    <string name="open_source_room">Room Database — Apache 2.0</string>
+    <string name="open_source_vico">Vico Charts — Apache 2.0</string>
+    <string name="open_source_coroutines">Kotlin Coroutines — Apache 2.0</string>
+    <string name="open_source_navigation">Navigation Compose — Apache 2.0</string>
+
     <!-- Settings - Time Picker -->
     <string name="set_reminder_time">设置提醒时间</string>
 
