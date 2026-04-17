@@ -1,5 +1,3 @@
-# MineWord 
-
 <div align="center">
   <a href="https://github.com/nwma-fywf/MineWord">
     <img src="app/src/main/ic_launcher-playstore.png" alt="MineWord logo" width="128" height="128">
