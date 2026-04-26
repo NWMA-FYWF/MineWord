@@ -3,7 +3,7 @@
     <img src="app/src/main/ic_launcher-playstore.png" alt="MineWord logo" width="128" height="128">
     <h1> MineWord </h1>
     <p>
-        <strong> 一款优雅的 Android 单词学习应用，帮助你高效记忆单词。 </strong>
+        <strong> 一款优雅的 Android 单词学习应用，帮助你高效记忆单词。 🤗 </strong>
     </p>
   </a>
 </div>
